@@ -1,0 +1,31 @@
+{
+    "name": "adminui/inertia-routes",
+    "description": "A hybrid JS/PHP package adding Ziggy-routes functionality to your Laravel/Inertia application",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+      {
+        "name": "Craig Riley",
+        "email": "c.riley@dsmdesign.co.uk"
+      }
+    ],
+    "require": {
+        "ext-tidy": "^8.1.0",
+        "php": "^8.0.2",
+        "inertiajs/inertia-laravel": "^0.6.0",
+        "laravel/framework": "^9.0",
+        "tightenco/ziggy": "^1.5"
+    },
+    "autoload": {
+        "psr-4": {
+          "AdminUI\\InertiaRoutes\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "AdminUI\\InertiaRoutes\\InertiaRoutesProvider"
+            ]
+        }
+    }
+  }
