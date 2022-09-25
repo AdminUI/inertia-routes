@@ -1,6 +1,7 @@
 {
     "name": "adminui/inertia-routes",
     "description": "A hybrid JS/PHP package adding Ziggy-routes functionality to your Laravel/Inertia application",
+    "version": "1.0.0",
     "type": "library",
     "license": "MIT",
     "authors": [

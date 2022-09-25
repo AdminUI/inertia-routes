@@ -81,3 +81,14 @@ export default {
 ```html
 <inertia-link :href="$route('home')">Home Page</inertia-link>
 ```
+
+## Options
+
+There are a couple of extra options you can add to your `config/inertia.php` file that will be used by Inertia Routes:
+
+| variable      | type           | description |
+| ------------- | -------------- | ----------- |
+| `route_group` | array\|string  | Pass a route group to be used instead of your standard Ziggy routes. |
+| `ssr.tidy`    | boolean        | Runs a TIDY filter over the SSR output |
+
+*Note: You can still use your standard `config/ziggy.php` settings to designate routes to be included or excluded if you don't set a `route_group`*
