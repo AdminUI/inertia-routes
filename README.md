@@ -88,7 +88,11 @@ There are a couple of extra options you can add to your `config/inertia.php` fil
 
 | variable      | type           | description |
 | ------------- | -------------- | ----------- |
-| `route_group` | array\|string  | Pass a route group to be used instead of your standard Ziggy routes. |
+| `route_group` | array\|string  | Pass a route group to be used instead of your standard Ziggy routes.  |
+| `route_only`  | array          | Filters your routes to only include ones matching the supplied array. |
+| `route_except`| array          | Filters your routes to include all except ones matching the supplied array. |
 | `ssr.tidy`    | boolean        | Runs a TIDY filter over the SSR output |
 
-*Note: You can still use your standard `config/ziggy.php` settings to designate routes to be included or excluded if you don't set a `route_group`*
+See the [Ziggy documentation](https://github.com/tighten/ziggy#filtering-routes) for further details about formatting your `route_group`, `route_only` and `route_except` options.
+
+*Note: Your `only` and `except` options in `config/ziggy.php` will be temporarily overridden if you set the `route_only` or `route_except` options in `config.php/inertia.php`*
