@@ -32,7 +32,7 @@ class InertiaRoutesProvider extends ServiceProvider
                 config(['ziggy.except' => $except]);
             }
 
-            $routes = new Ziggy($group, $request->url());
+            $routes = new Ziggy($group);
             $jsonRoutes = $routes->toArray();
 
             if (!empty($only)) {
