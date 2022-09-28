@@ -12,7 +12,6 @@ class InertiaRoutesProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(\Inertia\Ssr\HttpGateway::class, \AdminUI\InertiaRoutes\TidyHttpGateway::class);
-        //
     }
 
     public function boot(Request $request)
