@@ -17,7 +17,7 @@ class InertiaRoutesProvider extends ServiceProvider
 
     public function boot(Request $request)
     {
-        $firstLoadOnlyProps = $request->inertia() ? null : function () {
+        $firstLoadOnlyProps = $request->inertia() ? null : function () use ($request) {
             // Get the Inertia Routes settings
             $group = config('inertia.route_group', null);
             $only = config('inertia.route_only', null);
@@ -38,6 +38,8 @@ class InertiaRoutesProvider extends ServiceProvider
             // Generate the routes object and convert it to an array
             $routes = new Ziggy($group);
             $jsonRoutes = $routes->toArray();
+            // Add the request URL to the array to enable SSR/first load to use current()
+            $jsonRoutes['location'] = $request->url();
 
             // Revert the Ziggy settings to their initial state
             if (!empty($only)) {
