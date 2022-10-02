@@ -35,15 +35,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install JQ
-        run: sudo apt-get install -y jq
-
-      - name: Bump composer.json version
-        run: |
-          VERSION="${{ needs.tag.outputs.new_tag }}"
-          jq ".version=\"${VERSION:1}\"" ./composer.json > ./composer.tmp.json
-          mv ./composer.tmp.json ./composer.json
-
       - name: Process changelog
         run: |
           if [[ ! -z $(cat changelog/next.md) ]] ; then

@@ -1,7 +1,6 @@
 {
   "name": "adminui/inertia-routes",
   "description": "A hybrid JS/PHP package adding Ziggy-routes functionality to your Laravel/Inertia application",
-  "version": "1.0.1",
   "type": "library",
   "license": "MIT",
   "authors": [
@@ -11,11 +10,13 @@
     }
   ],
   "require": {
-    "ext-tidy": "^8.1.0",
     "php": "^8.0.2",
     "inertiajs/inertia-laravel": "^0.6.0",
     "laravel/framework": "^9.0",
     "tightenco/ziggy": "^1.5"
+  },
+  "suggest": {
+	"ext-tidy": "Required when using the SSR Tidy functionality"
   },
   "autoload": {
     "psr-4": {
