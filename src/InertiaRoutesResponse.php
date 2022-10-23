@@ -11,7 +11,7 @@ class InertiaRoutesResponse
 	public function getConfig(): array
 	{
 		$selectedIsValid = $this->validateKey($this->selectedConfig);
-		return $selectedIsValid ? config('inertia-routes.configs.' . $this->selectedConfig) : $this->fallbackConfig();
+		return $selectedIsValid ? $this->normaliseSelectedConfig() : $this->fallbackConfig();
 	}
 
 	public function setConfig(string $key): void
@@ -26,7 +26,16 @@ class InertiaRoutesResponse
 
 	private function validateKey(string $key): bool
 	{
+		if (config()->has('inertia-routes.configs') === false) {
+			throw new \Exception("Inertia Routes configs array not found. Please check your inertia-routes config file");
+		}
 		return Arr::exists(config('inertia-routes.configs'), $key) && Arr::isAssoc(config('inertia-routes.configs.' . $key));
+	}
+
+	private function normaliseSelectedConfig(): array
+	{
+		$config = config('inertia-routes.configs.' . $this->selectedConfig);
+		return array_merge($this->fallbackConfig(), $config);
 	}
 
 	private function fallbackConfig(): array
