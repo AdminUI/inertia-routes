@@ -63,11 +63,17 @@ jobs:
           fetch-depth: 0
 
       - name: Process changelog
+        id: changelog_path
         run: |
           if [[ ! -z $(cat changelog/next.md) ]] ; then
-            mv changelog/next.md changelog/${{ needs.tag.outputs.new_tag }}.md
+            mv changelog/next.md changelog/${TAG}.md
             touch changelog/next.md
+            echo "::set-output name=changelog::${TAG}"
+          else
+            echo "::set-output name=changelog::next"
           fi
+        env:
+          TAG: ${{ needs.tag.outputs.new_tag }}
 
       - name: Commit changes
         continue-on-error: true
@@ -77,18 +83,6 @@ jobs:
           git add .
           git commit -m "Github Action compiled resources"
           git push
-
-      - name: Set changelog path
-        id: changelog_path
-        run: |
-          if [-e changelog/${TAG}.md]
-          then
-            echo "::set-output name=changelog::${TAG}"
-          else
-            echo "::set-output name=changelog::next"
-          fi
-        env:
-          TAG: ${{ needs.tag.outputs.new_tag }}
 
       - name: Create Github release
         id: create_release
