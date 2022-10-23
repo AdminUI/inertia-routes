@@ -3,6 +3,7 @@
 <a href="https://packagist.org/packages/adminui/inertia-routes"><img src="https://img.shields.io/packagist/v/adminui/inertia-routes?logo=packagist&logoColor=white" alt="Build status" /></a>
 <a href="https://packagist.org/packages/adminui/inertia-routes"><img src="https://img.shields.io/packagist/dt/adminui/inertia-routes" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/adminui/inertia-routes"><img src="https://img.shields.io/packagist/l/adminui/inertia-routes" alt="License"></a>
+<img src="https://github.com/adminui/inertia-routes/actions/workflows/tests.yml/badge.svg?branch=main">
 
 This package is designed to complement Laravel/Inertia applications that want to use named routes within their Javascript, only without the overhead of loading the routes with every single API request.
 
@@ -123,7 +124,15 @@ Be aware that defining both `except` and `only` within the same config block wil
 
 See the [Ziggy documentation](https://github.com/tighten/ziggy#filtering-routes) for further details about formatting your `group`, `only` and `except` options.
 
-_Note: Your `only` and `except` options in `config/ziggy.php` will be temporarily overridden if you set the `only` or `except` options in `config/inertia-routes.php`_
+### Changing config
+
+Inertia Routes provides a facade for changing the config block that will be used when generating your routes:
+
+```php
+\AdminUI\InertiaRoutes\Facades\InertiaRoutes::setConfig('admin');
+```
+
+You can call this function any time before the Inertia shares are compiled, but a good place might be from within your Inertia Middleware's constructor.
 
 ---
 
@@ -136,7 +145,7 @@ Each method of integrating named routes from your Laravel backend with a JS fram
 3. **API route call:** Can be tricky to set up to work with dev, production and SSR environments. Also carries the overhead of waiting for a separate Ajax request to complete before the app can be rendered.
 4. **`Inertia::share` of routes object:** A good option with one downside – The routes are sent down as part of every Inertia request (initial or navigational).
 
-What this library does is tweak option 4 as well as adding extra functionality. The package detects when it is the initial full-page Inertia request and then sends down the Ziggy routes object. On subsequent navigations, the routes are not sent down again. Your app instead retain and use the routes from the first request.
+What this library does is tweak option 4 as well as adding extra functionality. The package detects when it is the initial full-page Inertia request and then sends down the Ziggy routes object. On subsequent navigations, the routes are not sent down again. Your app instead retains and uses the routes from the first request.
 
 The extra configuration options also allow you to set `group`, `only` and `except` options that only affect your frontend Ziggy routes. This can be helpful if you have separate Inertia apps running your backend and frontend and you wish to include only a subset of your total routes.
 
