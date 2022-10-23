@@ -5,7 +5,9 @@ namespace AdminUI\InertiaRoutes;
 use Inertia\Inertia;
 use Tightenco\Ziggy\Ziggy;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
+use AdminUI\InertiaRoutes\InertiaRoutesResponse;
 
 class InertiaRoutesProvider extends ServiceProvider
 {
@@ -13,55 +15,23 @@ class InertiaRoutesProvider extends ServiceProvider
 	{
 		// Bind our custom Gateway to the Inertia SSR one to allow us to override the dispatch function
 		$this->app->bind(\Inertia\Ssr\HttpGateway::class, \AdminUI\InertiaRoutes\TidyHttpGateway::class);
+		// Register the packages facades
+		$this->app->singleton('inertia-routes', function () {
+			return new InertiaRoutesResponse;
+		});
 		// Merge in inertia-routes config
 		$this->mergeConfigFrom(__DIR__ . '/../config/inertia-routes.php', 'inertia-routes');
 	}
 
-	public function boot(Request $request)
+	public function boot(Kernel $kernel)
 	{
 		$this->packageSetup();
-
-		$firstLoadOnlyProps = $request->inertia() ? null : function () use ($request) {
-			// Get the Inertia Routes settings
-			$group = config('inertia.route_group', null);
-			$only = config('inertia.route_only', null);
-			$except = config('inertia.route_except', null);
-
-			// Get the Ziggy config so that we can restore them after temporarily overriding them
-			$initialOnly = config('ziggy.only');
-			$initialExcept = config('ziggy.except');
-
-			// If set, temporarily override Ziggy settings
-			if (!empty($only)) {
-				config(['ziggy.only' => $only]);
-			}
-			if (!empty($except)) {
-				config(['ziggy.except' => $except]);
-			}
-
-			// Generate the routes object and convert it to an array
-			$routes = new Ziggy($group);
-			$jsonRoutes = $routes->toArray();
-			// Add the request URL to the array to enable SSR/first load to use current()
-			$jsonRoutes['location'] = $request->url();
-
-			// Revert the Ziggy settings to their initial state
-			if (!empty($only)) {
-				config(['ziggy.only' => $initialOnly]);
-			}
-			if (!empty($except)) {
-				config(['ziggy.except' => $initialExcept]);
-			}
-			return $jsonRoutes;
-		};
-		// Share either the routes object (first load) or `null` (navigation loads)
-		Inertia::share('ziggy', $firstLoadOnlyProps);
+		$kernel->prependMiddleware(InertiaRoutesMiddleware::class);
 	}
 
 	private function packageSetup()
 	{
 		if ($this->app->runningInConsole()) {
-
 			$this->publishes([
 				__DIR__ . '/../config/inertia-routes.php' => config_path('inertia-routes.php'),
 			], 'inertia-routes');

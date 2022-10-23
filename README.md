@@ -1,15 +1,23 @@
 # AdminUI - Inertia Routes
 
+<a href="https://packagist.org/packages/adminui/inertia-routes"><img src="https://img.shields.io/packagist/v/adminui/inertia-routes?logo=packagist&logoColor=white" alt="Build status" /></a>
+<a href="https://packagist.org/packages/adminui/inertia-routes"><img src="https://img.shields.io/packagist/dt/adminui/inertia-routes" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/adminui/inertia-routes"><img src="https://img.shields.io/packagist/l/adminui/inertia-routes" alt="License"></a>
+
 This package is designed to complement Laravel/Inertia applications that want to use named routes within their Javascript, only without the overhead of loading the routes with every single API request.
 
 A Vue plugin is also provided which offers both a `composable` function to resolve route names as well as a `global property`
+
+---
 
 ## Installation
 
 `composer require adminui/inertia-routes`
 
 ---
+
 > ### vite.config.js
+
 ---
 
 Add the following settings to your config
@@ -22,13 +30,16 @@ resolve: {
     },
 },
 ```
+
 ---
-> ### app.js / ssr.js 
+
+> ### app.js
+
 ---
+
 ```js
 import { useInertiaRoutes } from "inertiaRoutes";
 
-// Then, inside the app.js setup function:
 setup({ el, App, props, plugin }) {
     const inertiaRoutesPlugin = useInertiaRoutes(props);
 
@@ -37,8 +48,17 @@ setup({ el, App, props, plugin }) {
         .use(inertiaRoutesPlugin)
         .mount(el);
 }
+```
 
-// Or in your ssr.js file
+---
+
+> ### ssr.js
+
+---
+
+```js
+import { useInertiaRoutes } from "inertiaRoutes";
+
 setup({ app, props, plugin }) {
     const inertiaRoutesPlugin = useInertiaRoutes(props);
 
@@ -58,22 +78,22 @@ setup({ app, props, plugin }) {
 import { useRoute } from "inertiaRoutes";
 const route = useRoute();
 
-console.log(route('home'));
+console.log(route("home"));
 ```
 
 > ### Options API
 
 ```js
 export default {
-    data() {
-        return {}
+  data() {
+    return {};
+  },
+  computed: {
+    homeUrl() {
+      return this.$route("home");
     },
-    computed: {
-        homeUrl() {
-            return this.$route('home');
-        }
-    }
-}
+  },
+};
 ```
 
 > ### Template
@@ -82,35 +102,49 @@ export default {
 <inertia-link :href="$route('home')">Home Page</inertia-link>
 ```
 
+---
+
 ## Configuration
 
-There are a couple of extra options you can add to your `config/inertia.php` file that will be used by Inertia Routes:
+You can publish your config file by running `php artisan v:p --tag=inertia-routes` in the command line
 
-| variable      | type           | description |
-| ------------- | -------------- | ----------- |
-| `route_group` | array\|string  | Pass a route group to be used instead of your standard Ziggy routes.  |
-| `route_only`  | array          | Filters your routes to only include ones matching the supplied array. |
-| `route_except`| array          | Filters your routes to include all except ones matching the supplied array. |
-| `ssr.tidy`    | boolean        | Runs a TIDY filter over the SSR output |
+This will publish a file in `/config/inertia-routes.php` where you can override the default options. Full details and examples regarding the below configuration options can be found there.
 
-See the [Ziggy documentation](https://github.com/tighten/ziggy#filtering-routes) for further details about formatting your `route_group`, `route_only` and `route_except` options.
+Be aware that defining both `except` and `only` within the same config block will result in no route filtering being applied
 
-*Note: Your `only` and `except` options in `config/ziggy.php` will be temporarily overridden if you set the `route_only` or `route_except` options in `config.php/inertia.php`*
+| variable           | type     | description                                                              |
+| ------------------ | -------- | ------------------------------------------------------------------------ |
+| `tidy`             | boolean  | Runs a TIDY filter over the SSR output                                   |
+| `configs`          | array    | An associative array containing configuration options for Inertia Routes |
+| `configs.*.group`  | string   | Uses a Ziggy route group defined in /config/ziggy.php.                   |
+| `configs.*.except` | array    | Include all routes except ones matching the defined patterns             |
+| `configs.*.only`   | array    | Include only routes that match the defined patterns                      |
+| `configs.*.filter` | callable | A final callable function to execute on the generated routes array       |
 
-## How it works 
+See the [Ziggy documentation](https://github.com/tighten/ziggy#filtering-routes) for further details about formatting your `group`, `only` and `except` options.
+
+_Note: Your `only` and `except` options in `config/ziggy.php` will be temporarily overridden if you set the `only` or `except` options in `config/inertia-routes.php`_
+
+---
+
+## How it works
 
 Each method of integrating named routes from your Laravel backend with a JS framework on the frontend via Ziggy usually comes with its own pros and cons:
 
 1. **`@routes` blade directive:** Has to download the entire Ziggy JS library as part of the HTML document with every full page load. Also not compatible with SSR since it relies on accessing methods from the `window` object.
 2. **`ziggy:generate` routes file:** Needs to be regenerated with any route or environment changes (since the root URL is hard-coded into the .js file)
 3. **API route call:** Can be tricky to set up to work with dev, production and SSR environments. Also carries the overhead of waiting for a separate Ajax request to complete before the app can be rendered.
-4. **`Inertia::share` of routes object:** A good option with one downside – The routes are sent down as part of every Inertia request (initial or navigational). 
+4. **`Inertia::share` of routes object:** A good option with one downside – The routes are sent down as part of every Inertia request (initial or navigational).
 
 What this library does is tweak option 4 as well as adding extra functionality. The package detects when it is the initial full-page Inertia request and then sends down the Ziggy routes object. On subsequent navigations, the routes are not sent down again. Your app instead retain and use the routes from the first request.
 
-The extra configuration options also allow you to set `group`, `only` and `except` options that only affect your frontend Ziggy routes. This can be helpful if you have separate Inertia `apps` running your backend and frontend and you wish to include only a subset of your total routes.
+The extra configuration options also allow you to set `group`, `only` and `except` options that only affect your frontend Ziggy routes. This can be helpful if you have separate Inertia apps running your backend and frontend and you wish to include only a subset of your total routes.
 
-## What's the Tidy function about?
+---
+
+## Frequently Asked Questions
+
+### What's the Tidy function about?
 
 This package was created as a complement to the AdminUI CMS/Ecommerce sites running on InertiaJS. As such, it may contain a few other helpful options we use.
 

@@ -1,0 +1,19 @@
+## Migrating to version 2
+
+Settings from `/config/inertia.php` will no longer be read since they have been moved to a dedicated package configuration file. You can publish the new configuration file like so:
+
+```
+php artisan vendor:publish --tag=inertia-routes
+```
+
+Full instructions regarding how to configure Inertia Routes can be found in the published config file
+
+## New Features
+
+- Multiple configurations can now be set up for Inertia Routes
+- Change configuration by calling `AdminUI\InertiaRoutes\Facades\InertiaRoutes::setConfig('my-settings')` from within your Laravel app
+- `Filter` callable/function can be passed from your config to allow a final chance to add/remove routes. Useful for applying user permissions to provided routes
+
+## Other changes
+
+- Moved share functionality to middleware rather than using the package boot method
