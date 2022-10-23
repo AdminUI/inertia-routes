@@ -6,12 +6,10 @@ on:
       - main
 
 jobs:
-	test:
-		runs-on: ubuntu-latest
-		strategy:
-      fail-fast: true
+  tests:
+    runs-on: ubuntu-latest
 
-		steps:
+    steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -31,12 +29,12 @@ jobs:
           max_attempts: 5
           command: composer update --prefer-stable --no-interaction
 
-			- name: Execute tests
+      - name: Execute tests
         run: vendor/bin/pest
 
   tag:
     runs-on: ubuntu-latest
-		needs: test
+    needs: test
     steps:
       - uses: actions/checkout@v2
         with:
