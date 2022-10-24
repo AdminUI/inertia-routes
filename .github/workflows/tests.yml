@@ -68,9 +68,9 @@ jobs:
           if [[ ! -z $(cat changelog/next.md) ]] ; then
             mv changelog/next.md changelog/${TAG}.md
             touch changelog/next.md
-            echo "::set-output name=changelog::${TAG}"
+            echo "changelog=${TAG}" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=changelog::next"
+            echo "changelog=next" >> $GITHUB_OUTPUT
           fi
         env:
           TAG: ${{ needs.tag.outputs.new_tag }}
