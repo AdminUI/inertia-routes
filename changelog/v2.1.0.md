@@ -1,0 +1,28 @@
+## Vue2 Adapter
+
+-   Inertia Routes is now usable with Vue2-based Inertia applications
+
+```js
+// Setup your app as usual, but in your app.js/ssr.js files change your import path to /vue2
+
+import Vue from "vue";
+import { useInertiaRoutes } from "inertiaRoutes/vue2";
+import { createInertiaApp } from "@inertiajs/inertia-vue";
+
+createInertiaApp({
+	resolve: (name) => require(`./Pages/${name}`),
+	setup({ el, App, props, plugin }) {
+		const inertiaRoutesPlugin = useInertiaRoutes(props);
+
+		Vue.use(plugin);
+		// The plugin will add $route to the prototype. If you wish to have
+		// route added as a method mixin as well, pass a second config object
+		// with `mixin: true` as below
+		Vue.use(inertiaRoutesPlugin, { mixin: true });
+
+		new Vue({
+			render: (h) => h(App, props)
+		}).$mount(el);
+	}
+});
+```
