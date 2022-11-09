@@ -116,7 +116,7 @@ Be aware that defining both `except` and `only` within the same config block wil
 | variable           | type     | description                                                              |
 | ------------------ | -------- | ------------------------------------------------------------------------ |
 | `tidy`             | boolean  | Runs a TIDY filter over the SSR output                                   |
-| `configs`          | array    | An array of associative arrays containing configuration options for Inertia Routes |
+| `configs`          | array    | An associative array containing configuration options for Inertia Routes |
 | `configs.*.group`  | string   | Uses a Ziggy route group defined in /config/ziggy.php.                   |
 | `configs.*.except` | array    | Include all routes except ones matching the defined patterns             |
 | `configs.*.only`   | array    | Include only routes that match the defined patterns                      |
