@@ -24,6 +24,8 @@ A Vue plugin is also provided which offers both a `composable` function to resol
 Add the following settings to your config
 
 ```js
+import { resolve } from "node:path";
+
 resolve: {
     alias: {
         ziggy: resolve("vendor/tightenco/ziggy/src/js"),
