@@ -4,4 +4,3 @@ vendor
 .DS_Store
 node_modules
 stats.html
-dist
