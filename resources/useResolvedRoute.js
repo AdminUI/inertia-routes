@@ -6,7 +6,7 @@ import { useRoute } from "./useRoute";
  * @param {string|[string, Record<string, unknown>]} routeProp The route to resolve
  * @returns { import("vue").ComputedRef<string> } The resolved URL for the given route
  */
-export const useRouteProp = (routeProp) => {
+export const useResolvedRoute = (routeProp) => {
 	const route = useRoute();
 	return computed(() => {
 		routeProp = toValue(routeProp);

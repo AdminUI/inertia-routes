@@ -1,25 +1,67 @@
-import { computed, useAttrs } from "vue";
-import { router, usePage } from "@inertiajs/vue3";
+import { computed, useAttrs, ref } from "vue";
+import { router } from "@inertiajs/vue3";
 import { useBrowserLocation } from "@vueuse/core";
-import { useRouteProp } from "./utils";
+import { useResolvedRoute } from "./useResolvedRoute";
+
+const currentLocation = ref(null);
+const inertiaLinkProps = [
+	"data",
+	"method",
+	"replace",
+	"preserve-scroll",
+	"preserve-state",
+	"only",
+	"headers",
+	"queryStringArrayFormat",
+	"on-before",
+	"on-start",
+	"on-progress",
+	"on-finish",
+	"on-cancel",
+	"on-error",
+	"on-success",
+];
+const camelise = (s) => s.replace(/-./g, (x) => x[1].toUpperCase());
+const resolveValue = (key, value) => {
+	if (["replace", "preserve-scroll", "preserve-state"].includes(key)) {
+		return true;
+	} else return value;
+};
+
+const resolveParameters = (attrs) => {
+	const parameters = inertiaLinkProps.reduce((acc, curr) => {
+		if (typeof attrs[curr] !== "undefined") {
+			acc[camelise(curr)] = resolveValue(curr, attrs[curr]);
+		}
+		return acc;
+	}, {});
+	if (!parameters.method) parameters.method = "GET";
+
+	return parameters;
+};
 
 const Plugin = {
 	useLink(props) {
 		const browserLocation = useBrowserLocation();
-		const routeHref = useRouteProp(props.to);
-		const currentUrl = computed(() => browserLocation.value.origin + usePage().url);
+		if (!currentLocation.value) {
+			currentLocation.value = `${browserLocation.value.origin}${browserLocation.value.pathname}`;
+		}
+
+		const target = useResolvedRoute(props.to);
 		const attrs = useAttrs();
-		const method = attrs["method"] || "GET";
+
+		const parameters = resolveParameters(attrs);
 
 		return {
-			route: computed(() => ({ href: routeHref.value })),
-			isExactActive: computed(() => currentUrl.value === routeHref.value),
-			isActive: computed(() => currentUrl.value.startsWith(routeHref.value)),
+			route: computed(() => ({ href: target.value })),
+			isExactActive: computed(() => currentLocation.value === target.value),
+			isActive: computed(() => currentLocation.value.startsWith(target.value)),
 			navigate(e) {
 				if (e.shiftKey || e.metaKey || e.ctrlKey) return;
 				e.preventDefault();
 
-				router.visit(routeHref.value, { method });
+				currentLocation.value = target.value;
+				router.visit(target.value, parameters);
 			},
 		};
 	},

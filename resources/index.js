@@ -1,4 +1,4 @@
 export { default as useInertiaRoutes } from "./plugin";
 export { default as vuetifyRoutesPlugin } from "./vuetify";
-export { useRouteProp } from "./utils";
+export { useResolvedRoute } from "./useResolvedRoute";
 export { useRoute } from "./useRoute";

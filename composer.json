@@ -15,6 +15,12 @@
 		"laravel/framework": "^9.0|^10.0|^11.0",
 		"tightenco/ziggy": "^2.0"
 	},
+	"require-dev": {
+		"phpunit/phpunit": "^9.5|^10.0|^11.0",
+		"orchestra/testbench": "^7.11|^8.0|^9.0",
+		"pestphp/pest": "^1.22|^2.0",
+		"pestphp/pest-plugin-laravel": "^1.3|^2.0"
+	},
 	"suggest": {
 		"ext-tidy": "Required when using the SSR Tidy functionality"
 	},
@@ -30,12 +36,6 @@
 				"AdminUI\\InertiaRoutes\\InertiaRoutesProvider"
 			]
 		}
-	},
-	"require-dev": {
-		"phpunit/phpunit": "^9.5|^10.0|^11.0",
-		"orchestra/testbench": "^7.11|^8.0|^9.0",
-		"pestphp/pest": "^1.22|^2.0",
-		"pestphp/pest-plugin-laravel": "^1.3|^2.0"
 	},
 	"config": {
 		"allow-plugins": {
