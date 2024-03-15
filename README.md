@@ -28,7 +28,6 @@ import { resolve } from "node:path";
 
 resolve: {
     alias: {
-        ziggy: resolve("vendor/tightenco/ziggy/src/js"),
         inertiaRoutes: resolve("vendor/adminui/inertia-routes"),
     },
 },
@@ -117,7 +116,6 @@ Be aware that defining both `except` and `only` within the same config block wil
 
 | variable           | type     | description                                                              |
 | ------------------ | -------- | ------------------------------------------------------------------------ |
-| `tidy`             | boolean  | Runs a TIDY filter over the SSR output                                   |
 | `configs`          | array    | An associative array containing configuration options for Inertia Routes |
 | `configs.*.group`  | string   | Uses a Ziggy route group defined in /config/ziggy.php.                   |
 | `configs.*.except` | array    | Include all routes except ones matching the defined patterns             |
