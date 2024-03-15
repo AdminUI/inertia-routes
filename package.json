@@ -19,7 +19,9 @@
 	],
 	"author": "",
 	"license": "MIT",
-	"dependencies": {},
+	"dependencies": {
+		"qs": ">=6.0.0"
+	},
 	"peerDependencies": {
 		"vue": ">=2.6.0"
 	}
