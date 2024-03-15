@@ -4,7 +4,7 @@ namespace AdminUI\InertiaRoutes;
 
 use Closure;
 use Inertia\Inertia;
-use Tightenco\Ziggy\Ziggy;
+use Tighten\Ziggy\Ziggy;
 use AdminUI\InertiaRoutes\Facades\InertiaRoutes;
 
 class InertiaRoutesMiddleware

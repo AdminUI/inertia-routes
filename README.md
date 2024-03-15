@@ -88,14 +88,14 @@ console.log(route("home"));
 
 ```js
 export default {
-  data() {
-    return {};
-  },
-  computed: {
-    homeUrl() {
-      return this.$route("home");
-    },
-  },
+	data() {
+		return {};
+	},
+	computed: {
+		homeUrl() {
+			return this.$route("home");
+		},
+	},
 };
 ```
 
@@ -150,13 +150,3 @@ Each method of integrating named routes from your Laravel backend with a JS fram
 What this library does is tweak option 4 as well as adding extra functionality. The package detects when it is the initial full-page Inertia request and then sends down the Ziggy routes object. On subsequent navigations, the routes are not sent down again. Your app instead retains and uses the routes from the first request.
 
 The extra configuration options also allow you to set `group`, `only` and `except` options that only affect your frontend Ziggy routes. This can be helpful if you have separate Inertia apps running your backend and frontend and you wish to include only a subset of your total routes.
-
----
-
-## Frequently Asked Questions
-
-### What's the Tidy function about?
-
-This package was created as a complement to the AdminUI CMS/Ecommerce sites running on InertiaJS. As such, it may contain a few other helpful options we use.
-
-When the SSR script outputs your rendered HTML, it's usually in a single, compressed line. While this is often fine (indeed usually preferable), we had a few clients who disliked not being to read the HTML page source formatted like a normal website. We built this function for them. It simply passes the rendered HTML through a PHP extension called `Tidy` which formats the HTML in a standardised way. This is an optional extra and not enabled by default.

@@ -1,6 +1,6 @@
 import { reactive } from "vue";
 import { routeKey } from "./useRoute";
-import route from "ziggy";
+import { route } from "ziggy";
 
 const ziggy = reactive({});
 
@@ -13,7 +13,9 @@ export default function (props) {
 	}
 
 	return {
-		install: (app) => {
+		install: (app, options = {}) => {
+			const isGlobal = options.global ?? true;
+
 			const routeFunction = (name, params, absolute, config = ziggy) => {
 				// When global is available, drop the preloaded location to allow dynamic reading
 				if (ziggy.location && typeof window !== "undefined") {
@@ -23,7 +25,10 @@ export default function (props) {
 			};
 
 			app.provide(routeKey, routeFunction);
-			app.config.globalProperties.$route = routeFunction;
-		}
+
+			if (isGlobal) {
+				app.config.globalProperties.$route = routeFunction;
+			}
+		},
 	};
 }

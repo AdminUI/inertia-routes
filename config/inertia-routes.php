@@ -3,20 +3,6 @@
 return [
 	/*
     |--------------------------------------------------------------------------
-    | Enable SSR Tidy
-    |--------------------------------------------------------------------------
-    |
-    | An additional utility that passes the output from the Inertia SSR render
-	| function through a tidy filter. This will convert "minimised" style HTML
-	| into traditional multi-line nested HTML.
-	|
-	| Requires the php-tidy extension to be installed
-    |
-    */
-	'tidy' => false,
-
-	/*
-    |--------------------------------------------------------------------------
     | Configuration Settings
     |--------------------------------------------------------------------------
     |

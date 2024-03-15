@@ -1,4 +1,7 @@
 vendor
 *.cache
+*.bak
 .DS_Store
 node_modules
+stats.html
+dist
