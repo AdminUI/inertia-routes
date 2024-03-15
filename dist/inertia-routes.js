@@ -1675,7 +1675,7 @@ const To = (r) => {
     const e = Do();
     te.value || (te.value = `${e.value.origin}${e.value.pathname}`);
     const t = To(r.to), n = Xr(), a = Co(n);
-    return console.log(a), {
+    return {
       route: ye(() => ({ href: t.value })),
       isExactActive: ye(() => te.value === t.value),
       isActive: ye(() => te.value.startsWith(t.value)),
@@ -1691,7 +1691,7 @@ const To = (r) => {
 };
 export {
   Go as useInertiaRoutes,
+  To as useResolvedRoute,
   rt as useRoute,
-  To as useRouteProp,
   jo as vuetifyRoutesPlugin
 };
