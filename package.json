@@ -1,12 +1,13 @@
 {
 	"name": "@adminui/inertia-routes",
 	"version": "1.0.0",
+	"type": "module",
 	"description": "A hybrid JS/PHP package adding Ziggy-routes functionality to your Laravel/Inertia application",
 	"exports": {
-		"./vue2": "./vue2/index.js",
-		".": "./vue3/index.js"
+		".": "./dist/inertia-routes.js"
 	},
 	"scripts": {
+		"build": "vite build",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [
@@ -20,9 +21,13 @@
 	"author": "",
 	"license": "MIT",
 	"dependencies": {
-		"qs": ">=6.0.0"
+		"qs": ">=6.0.0",
+		"@vueuse/core": "^10.9.0"
 	},
 	"peerDependencies": {
-		"vue": ">=2.6.0"
+		"vue": ">=3.0.0"
+	},
+	"devDependencies": {
+		"rollup-plugin-visualizer": "^5.12.0"
 	}
 }

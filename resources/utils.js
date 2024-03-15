@@ -1,5 +1,5 @@
 import { computed, toValue } from "vue";
-import { useRoute } from "inertiaRoutes";
+import { useRoute } from "./useRoute";
 
 /**
  * Takes either a route string, or a tuple of string/params object and resolves a URL

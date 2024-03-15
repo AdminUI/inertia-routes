@@ -7,7 +7,6 @@ const Plugin = {
 	useLink(props) {
 		const browserLocation = useBrowserLocation();
 		const routeHref = useRouteProp(props.to);
-		console.log(routeHref.value);
 		const currentUrl = computed(() => browserLocation.value.origin + usePage().url);
 		const attrs = useAttrs();
 		const method = attrs["method"] || "GET";
@@ -20,8 +19,7 @@ const Plugin = {
 				if (e.shiftKey || e.metaKey || e.ctrlKey) return;
 				e.preventDefault();
 
-				console.log(routeHref.value, method);
-				//router.visit(routeHref.value, { method });
+				router.visit(routeHref.value, { method });
 			},
 		};
 	},
