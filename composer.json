@@ -1,12 +1,12 @@
 {
 	"name": "adminui/inertia-routes",
-	"description": "A hybrid JS/PHP package adding Ziggy-routes functionality to your Laravel/Inertia application",
+	"description": "A hybrid JS/PHP package adding Ziggy-routes functionality to your Laravel/Inertia/Vue3 application",
 	"type": "library",
 	"license": "MIT",
 	"authors": [
 		{
 			"name": "Craig Riley",
-			"email": "c.riley@dsmdesign.co.uk"
+			"email": "c.riley@evomark.co.uk"
 		}
 	],
 	"require": {
@@ -20,9 +20,6 @@
 		"orchestra/testbench": "^7.11|^8.0|^9.0",
 		"pestphp/pest": "^1.22|^2.0",
 		"pestphp/pest-plugin-laravel": "^1.3|^2.0"
-	},
-	"suggest": {
-		"ext-tidy": "Required when using the SSR Tidy functionality"
 	},
 	"autoload": {
 		"psr-4": {

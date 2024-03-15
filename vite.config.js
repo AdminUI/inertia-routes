@@ -1,5 +1,4 @@
 import { resolve } from "node:path";
-import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 
@@ -8,7 +7,7 @@ export default defineConfig(({ mode }) => ({
 	esbuild: {
 		pure: mode === "production" ? ["console.log"] : [],
 	},
-	plugins: [vue(), visualizer()],
+	plugins: [vue()],
 	resolve: {
 		alias: {
 			ziggy: resolve("vendor/tightenco/ziggy/src/js"),
