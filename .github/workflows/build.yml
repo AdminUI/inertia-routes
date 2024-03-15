@@ -117,7 +117,7 @@ jobs:
           git config --global user.name  "AdminUI Action"
           git add .
           git commit -m "Github Action compiled resources"
-          git push
+          git push --force
 
       - name: Create Github release
         id: create_release

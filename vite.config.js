@@ -4,7 +4,10 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+	esbuild: {
+		pure: mode === "production" ? ["console.log"] : [],
+	},
 	plugins: [vue(), visualizer()],
 	resolve: {
 		alias: {
@@ -20,4 +23,4 @@ export default defineConfig({
 			external: ["vue", "@inertiajs/vue3"],
 		},
 	},
-});
+}));
