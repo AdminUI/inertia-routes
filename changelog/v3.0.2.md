@@ -1,0 +1,1 @@
+-   **BugFix**: Various fixes to licence and metadata
