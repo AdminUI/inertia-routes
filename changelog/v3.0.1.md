@@ -1,0 +1,1 @@
+-   **BugFix**: Remove console from dist package
