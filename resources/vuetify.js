@@ -40,31 +40,34 @@ const resolveParameters = (attrs) => {
 	return parameters;
 };
 
+const useLink = (props) => {
+	const browserLocation = useBrowserLocation();
+	if (!currentLocation.value) {
+		currentLocation.value = `${browserLocation.value.origin}${browserLocation.value.pathname}`;
+	}
+
+	const target = useResolvedRoute(props.to);
+	const attrs = useAttrs();
+
+	const parameters = resolveParameters(attrs);
+
+	return {
+		route: computed(() => ({ href: target.value })),
+		isExactActive: computed(() => currentLocation.value === target.value),
+		isActive: computed(() => currentLocation.value.startsWith(target.value)),
+		navigate(e) {
+			if (e.shiftKey || e.metaKey || e.ctrlKey) return;
+			e.preventDefault();
+
+			currentLocation.value = target.value;
+			router.visit(target.value, parameters);
+		},
+	};
+};
+
 const Plugin = {
-	useLink(props) {
-		const browserLocation = useBrowserLocation();
-		if (!currentLocation.value) {
-			currentLocation.value = `${browserLocation.value.origin}${browserLocation.value.pathname}`;
-		}
-
-		const target = useResolvedRoute(props.to);
-		const attrs = useAttrs();
-
-		const parameters = resolveParameters(attrs);
-
-		return {
-			route: computed(() => ({ href: target.value })),
-			isExactActive: computed(() => currentLocation.value === target.value),
-			isActive: computed(() => currentLocation.value.startsWith(target.value)),
-			navigate(e) {
-				if (e.shiftKey || e.metaKey || e.ctrlKey) return;
-				e.preventDefault();
-
-				currentLocation.value = target.value;
-				router.visit(target.value, parameters);
-			},
-		};
-	},
+	name: "RouterLink",
+	useLink,
 };
 
 export default {

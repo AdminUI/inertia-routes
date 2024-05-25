@@ -91,7 +91,7 @@ var ot = Error, at = EvalError, it = RangeError, lt = ReferenceError, $r = Synta
     f.prototype = t.prototype, a.prototype = new f(), f.prototype = null;
   }
   return a;
-}, wt = St, ke = Function.prototype.bind || wt, At = Function.prototype.call, Et = Object.prototype.hasOwnProperty, Ot = ke, $t = Ot.call(At, Et), d, Pt = ot, _t = at, It = it, xt = lt, H = $r, V = ie, Ft = ft, Pr = Function, Oe = function(r) {
+}, wt = St, je = Function.prototype.bind || wt, At = Function.prototype.call, Et = Object.prototype.hasOwnProperty, Ot = je, $t = Ot.call(At, Et), d, Pt = ot, _t = at, It = it, xt = lt, H = $r, V = ie, Ft = ft, Pr = Function, Oe = function(r) {
   try {
     return Pr('"use strict"; return (' + r + ").constructor;")();
   } catch {
@@ -115,14 +115,14 @@ var $e = function() {
       return $e;
     }
   }
-}() : $e, k = st(), Dt = yt(), S = Object.getPrototypeOf || (Dt ? function(r) {
+}() : $e, j = st(), Dt = yt(), S = Object.getPrototypeOf || (Dt ? function(r) {
   return r.__proto__;
 } : null), K = {}, Tt = typeof Uint8Array > "u" || !S ? d : S(Uint8Array), L = {
   __proto__: null,
   "%AggregateError%": typeof AggregateError > "u" ? d : AggregateError,
   "%Array%": Array,
   "%ArrayBuffer%": typeof ArrayBuffer > "u" ? d : ArrayBuffer,
-  "%ArrayIteratorPrototype%": k && S ? S([][Symbol.iterator]()) : d,
+  "%ArrayIteratorPrototype%": j && S ? S([][Symbol.iterator]()) : d,
   "%AsyncFromSyncIteratorPrototype%": d,
   "%AsyncFunction%": K,
   "%AsyncGenerator%": K,
@@ -153,10 +153,10 @@ var $e = function() {
   "%Int32Array%": typeof Int32Array > "u" ? d : Int32Array,
   "%isFinite%": isFinite,
   "%isNaN%": isNaN,
-  "%IteratorPrototype%": k && S ? S(S([][Symbol.iterator]())) : d,
+  "%IteratorPrototype%": j && S ? S(S([][Symbol.iterator]())) : d,
   "%JSON%": typeof JSON == "object" ? JSON : d,
   "%Map%": typeof Map > "u" ? d : Map,
-  "%MapIteratorPrototype%": typeof Map > "u" || !k || !S ? d : S((/* @__PURE__ */ new Map())[Symbol.iterator]()),
+  "%MapIteratorPrototype%": typeof Map > "u" || !j || !S ? d : S((/* @__PURE__ */ new Map())[Symbol.iterator]()),
   "%Math%": Math,
   "%Number%": Number,
   "%Object%": Object,
@@ -169,11 +169,11 @@ var $e = function() {
   "%Reflect%": typeof Reflect > "u" ? d : Reflect,
   "%RegExp%": RegExp,
   "%Set%": typeof Set > "u" ? d : Set,
-  "%SetIteratorPrototype%": typeof Set > "u" || !k || !S ? d : S((/* @__PURE__ */ new Set())[Symbol.iterator]()),
+  "%SetIteratorPrototype%": typeof Set > "u" || !j || !S ? d : S((/* @__PURE__ */ new Set())[Symbol.iterator]()),
   "%SharedArrayBuffer%": typeof SharedArrayBuffer > "u" ? d : SharedArrayBuffer,
   "%String%": String,
-  "%StringIteratorPrototype%": k && S ? S(""[Symbol.iterator]()) : d,
-  "%Symbol%": k ? Symbol : d,
+  "%StringIteratorPrototype%": j && S ? S(""[Symbol.iterator]()) : d,
+  "%Symbol%": j ? Symbol : d,
   "%SyntaxError%": H,
   "%ThrowTypeError%": Rt,
   "%TypedArray%": Tt,
@@ -263,7 +263,7 @@ var Mt = function r(e) {
   "%URIErrorPrototype%": ["URIError", "prototype"],
   "%WeakMapPrototype%": ["WeakMap", "prototype"],
   "%WeakSetPrototype%": ["WeakSet", "prototype"]
-}, le = ke, he = $t, Bt = le.call(Function.call, Array.prototype.concat), Ct = le.call(Function.apply, Array.prototype.splice), er = le.call(Function.call, String.prototype.replace), ge = le.call(Function.call, String.prototype.slice), Ut = le.call(Function.call, RegExp.prototype.exec), Wt = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g, Lt = /\\(\\)?/g, Gt = function(e) {
+}, le = je, he = $t, Bt = le.call(Function.call, Array.prototype.concat), Ct = le.call(Function.apply, Array.prototype.splice), er = le.call(Function.call, String.prototype.replace), ge = le.call(Function.call, String.prototype.slice), Ut = le.call(Function.call, RegExp.prototype.exec), Wt = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g, Lt = /\\(\\)?/g, Gt = function(e) {
   var t = ge(e, 0, 1), n = ge(e, -1);
   if (t === "%" && n !== "%")
     throw new H("invalid intrinsic syntax, expected closing `%`");
@@ -273,7 +273,7 @@ var Mt = function r(e) {
   return er(e, Wt, function(o, i, l, u) {
     a[a.length] = l ? er(u, Lt, "$1") : i || o;
   }), a;
-}, jt = function(e, t) {
+}, kt = function(e, t) {
   var n = e, a;
   if (he(Xe, n) && (a = Xe[n], n = "%" + a[0] + "%"), he(L, n)) {
     var o = L[n];
@@ -293,7 +293,7 @@ var Mt = function r(e) {
     throw new V('"allowMissing" argument must be a boolean');
   if (Ut(/^%?[^%]*%?$/, e) === null)
     throw new H("`%` may not be present anywhere but at the beginning and end of the intrinsic name");
-  var n = Gt(e), a = n.length > 0 ? n[0] : "", o = jt("%" + a + "%", t), i = o.name, l = o.value, u = !1, f = o.alias;
+  var n = Gt(e), a = n.length > 0 ? n[0] : "", o = kt("%" + a + "%", t), i = o.name, l = o.value, u = !1, f = o.alias;
   f && (a = f[0], Ct(n, Bt([0, 1], f)));
   for (var c = 1, p = !0; c < n.length; c += 1) {
     var s = n[c], y = ge(s, 0, 1), v = ge(s, -1);
@@ -330,7 +330,7 @@ function qe() {
     }
   return Pe = e, Pe;
 }
-var kt = Z, de = kt("%Object.getOwnPropertyDescriptor%", !0);
+var jt = Z, de = jt("%Object.getOwnPropertyDescriptor%", !0);
 if (de)
   try {
     de([], "length");
@@ -399,7 +399,7 @@ var Kt = xr, Vt = Z, or = zt, Ht = Kt(), ar = Ir, ir = ie, Qt = Vt("%Math.floor%
   )), e;
 };
 (function(r) {
-  var e = ke, t = Z, n = Jt, a = ie, o = t("%Function.prototype.apply%"), i = t("%Function.prototype.call%"), l = t("%Reflect.apply%", !0) || e.call(i, o), u = qe(), f = t("%Math.max%");
+  var e = je, t = Z, n = Jt, a = ie, o = t("%Function.prototype.apply%"), i = t("%Function.prototype.call%"), l = t("%Reflect.apply%", !0) || e.call(i, o), u = qe(), f = t("%Math.max%");
   r.exports = function(s) {
     if (typeof s != "function")
       throw new a("a function is required");
@@ -548,8 +548,8 @@ var We = tn, vr = We.custom, hr = Mr(vr) ? vr : null, yn = function r(e, t, n, a
   if (e === tt)
     return "{ [object globalThis] }";
   if (!vn(e) && !gr(e)) {
-    var G = ce(e, s), fe = yr ? yr(e) === Object.prototype : e instanceof Object || e.constructor === Object, C = e instanceof Object ? "" : "null prototype", F = !fe && w && Object(e) === e && w in e ? Ve.call(M(e), 8, -1) : C ? "Object" : "", ue = fe || typeof e.constructor != "function" ? "" : e.constructor.name ? e.constructor.name + " " : "", j = ue + (F || C ? "[" + P.call(sr.call([], F || [], C || []), ": ") + "] " : "");
-    return G.length === 0 ? j + "{}" : p ? j + "{" + Ge(G, p) + "}" : j + "{ " + P.call(G, ", ") + " }";
+    var G = ce(e, s), fe = yr ? yr(e) === Object.prototype : e instanceof Object || e.constructor === Object, C = e instanceof Object ? "" : "null prototype", F = !fe && w && Object(e) === e && w in e ? Ve.call(M(e), 8, -1) : C ? "Object" : "", ue = fe || typeof e.constructor != "function" ? "" : e.constructor.name ? e.constructor.name + " " : "", k = ue + (F || C ? "[" + P.call(sr.call([], F || [], C || []), ": ") + "] " : "");
+    return G.length === 0 ? k + "{}" : p ? k + "{" + Ge(G, p) + "}" : k + "{ " + P.call(G, ", ") + " }";
   }
   return String(e);
 };
@@ -791,9 +791,9 @@ var Ur = Z, Y = Xt, Dn = yn, Tn = ie, se = Ur("%WeakMap%", !0), pe = Ur("%Map%",
     next: r.next,
     value: t
   };
-}, jn = function(r, e) {
+}, kn = function(r, e) {
   return !!He(r, e);
-}, kn = function() {
+}, jn = function() {
   var e, t, n, a = {
     assert: function(o) {
       if (!a.has(o))
@@ -817,7 +817,7 @@ var Ur = Z, Y = Xt, Dn = yn, Tn = ie, se = Ur("%WeakMap%", !0), pe = Ur("%Map%",
         if (t)
           return Wn(t, o);
       } else if (n)
-        return jn(n, o);
+        return kn(n, o);
       return !1;
     },
     set: function(o, i) {
@@ -955,7 +955,7 @@ var Ur = Z, Y = Xt, Dn = yn, Tn = ie, se = Ur("%WeakMap%", !0), pe = Ur("%Map%",
   isRegExp: Xn,
   maybeMap: to,
   merge: Hn
-}, Gr = kn, ve = Lr, ae = Qe, no = Object.prototype.hasOwnProperty, jr = {
+}, Gr = jn, ve = Lr, ae = Qe, no = Object.prototype.hasOwnProperty, kr = {
   brackets: function(e) {
     return e + "[]";
   },
@@ -966,7 +966,7 @@ var Ur = Z, Y = Xt, Dn = yn, Tn = ie, se = Ur("%WeakMap%", !0), pe = Ur("%Map%",
   repeat: function(e) {
     return e;
   }
-}, $ = Array.isArray, oo = Array.prototype.push, kr = function(r, e) {
+}, $ = Array.isArray, oo = Array.prototype.push, jr = function(r, e) {
   oo.apply(r, $(e) ? e : [e]);
 }, ao = Date.prototype.toISOString, br = ae.default, m = {
   addQueryPrefix: !1,
@@ -1027,7 +1027,7 @@ var Ur = Z, Y = Xt, Dn = yn, Tn = ie, se = Ur("%WeakMap%", !0), pe = Ur("%Map%",
     var ue = Object.keys(h);
     F = p ? ue.sort(p) : ue;
   }
-  var j = u ? t.replace(/\./g, "%2E") : t, E = a && $(h) && h.length === 1 ? j + "[]" : j;
+  var k = u ? t.replace(/\./g, "%2E") : t, E = a && $(h) && h.length === 1 ? k + "[]" : k;
   if (o && $(h) && h.length === 0)
     return E + "[]";
   for (var R = 0; R < F.length; ++R) {
@@ -1036,7 +1036,7 @@ var Ur = Z, Y = Xt, Dn = yn, Tn = ie, se = Ur("%WeakMap%", !0), pe = Ur("%Map%",
       var Se = s && u ? D.replace(/\./g, "%2E") : D, Hr = $(h) ? typeof n == "function" ? n(E, Se) : E : E + (s ? "." + Se : "[" + Se + "]");
       I.set(e, B);
       var Je = Gr();
-      Je.set(Te, I), kr(C, r(
+      Je.set(Te, I), jr(C, r(
         ee,
         Hr,
         n,
@@ -1080,7 +1080,7 @@ var Ur = Z, Y = Xt, Dn = yn, Tn = ie, se = Ur("%WeakMap%", !0), pe = Ur("%Map%",
   var a = ae.formatters[n], o = m.filter;
   (typeof e.filter == "function" || $(e.filter)) && (o = e.filter);
   var i;
-  if (e.arrayFormat in jr ? i = e.arrayFormat : "indices" in e ? i = e.indices ? "indices" : "repeat" : i = m.arrayFormat, "commaRoundTrip" in e && typeof e.commaRoundTrip != "boolean")
+  if (e.arrayFormat in kr ? i = e.arrayFormat : "indices" in e ? i = e.indices ? "indices" : "repeat" : i = m.arrayFormat, "commaRoundTrip" in e && typeof e.commaRoundTrip != "boolean")
     throw new TypeError("`commaRoundTrip` must be a boolean, or absent");
   var l = typeof e.allowDots > "u" ? e.encodeDotInKeys === !0 ? !0 : m.allowDots : !!e.allowDots;
   return {
@@ -1110,11 +1110,11 @@ var Ur = Z, Y = Xt, Dn = yn, Tn = ie, se = Ur("%WeakMap%", !0), pe = Ur("%Map%",
   var i = [];
   if (typeof t != "object" || t === null)
     return "";
-  var l = jr[n.arrayFormat], u = l === "comma" && n.commaRoundTrip;
+  var l = kr[n.arrayFormat], u = l === "comma" && n.commaRoundTrip;
   a || (a = Object.keys(t)), n.sort && a.sort(n.sort);
   for (var f = Gr(), c = 0; c < a.length; ++c) {
     var p = a[c];
-    n.skipNulls && t[p] === null || kr(i, lo(
+    n.skipNulls && t[p] === null || jr(i, lo(
       t[p],
       p,
       l,
@@ -1137,7 +1137,7 @@ var Ur = Z, Y = Xt, Dn = yn, Tn = ie, se = Ur("%WeakMap%", !0), pe = Ur("%Map%",
   }
   var s = i.join(n.delimiter), y = n.addQueryPrefix === !0 ? "?" : "";
   return n.charsetSentinel && (n.charset === "iso-8859-1" ? y += "utf8=%26%2310003%3B&" : y += "utf8=%E2%9C%93&"), s.length > 0 ? y + s : "";
-}, J = Lr, je = Object.prototype.hasOwnProperty, co = Array.isArray, g = {
+}, J = Lr, ke = Object.prototype.hasOwnProperty, co = Array.isArray, g = {
   allowDots: !1,
   allowEmptyArrays: !1,
   allowPrototypes: !1,
@@ -1177,7 +1177,7 @@ var Ur = Z, Y = Xt, Dn = yn, Tn = ie, se = Ur("%WeakMap%", !0), pe = Ur("%Map%",
           return t.decoder(A, g.decoder, f, "value");
         }
       )), v && t.interpretNumericEntities && f === "iso-8859-1" && (v = so(v)), c.indexOf("[]=") > -1 && (v = co(v) ? [v] : v);
-      var b = je.call(n, y);
+      var b = ke.call(n, y);
       b && t.duplicates === "combine" ? n[y] = J.combine(n[y], v) : (!b || t.duplicates === "last") && (n[y] = v);
     }
   return n;
@@ -1198,12 +1198,12 @@ var Ur = Z, Y = Xt, Dn = yn, Tn = ie, se = Ur("%WeakMap%", !0), pe = Ur("%Map%",
   if (e) {
     var o = n.allowDots ? e.replace(/\.([^.[]+)/g, "[$1]") : e, i = /(\[[^[\]]*])/, l = /(\[[^[\]]*])/g, u = n.depth > 0 && i.exec(o), f = u ? o.slice(0, u.index) : o, c = [];
     if (f) {
-      if (!n.plainObjects && je.call(Object.prototype, f) && !n.allowPrototypes)
+      if (!n.plainObjects && ke.call(Object.prototype, f) && !n.allowPrototypes)
         return;
       c.push(f);
     }
     for (var p = 0; n.depth > 0 && (u = l.exec(o)) !== null && p < n.depth; ) {
-      if (p += 1, !n.plainObjects && je.call(Object.prototype, u[1].slice(1, -1)) && !n.allowPrototypes)
+      if (p += 1, !n.plainObjects && ke.call(Object.prototype, u[1].slice(1, -1)) && !n.allowPrototypes)
         return;
       c.push(u[1]);
     }
@@ -1552,7 +1552,7 @@ function Oo(r, e, t, n) {
   return r ? a.toString() : a;
 }
 const z = Ar({});
-function Go(r) {
+function ko(r) {
   return r.initialPage.props.ziggy && (Object.keys(r.initialPage.props.ziggy).forEach((e) => {
     z[e] = r.initialPage.props.ziggy[e];
   }), z.location = new URL(z.location)), {
@@ -1670,27 +1670,28 @@ const To = (r) => {
 ], Mo = (r) => r.replace(/-./g, (e) => e[1].toUpperCase()), Bo = (r, e) => ["replace", "preserve-scroll", "preserve-state"].includes(r) ? !0 : e, Co = (r) => {
   const e = No.reduce((t, n) => (typeof r[n] < "u" && (t[Mo(n)] = Bo(n, r[n])), t), {});
   return e.method || (e.method = "GET"), e;
-}, Uo = {
-  useLink(r) {
-    const e = Do();
-    te.value || (te.value = `${e.value.origin}${e.value.pathname}`);
-    const t = To(r.to), n = Xr(), a = Co(n);
-    return {
-      route: ye(() => ({ href: t.value })),
-      isExactActive: ye(() => te.value === t.value),
-      isActive: ye(() => te.value.startsWith(t.value)),
-      navigate(o) {
-        o.shiftKey || o.metaKey || o.ctrlKey || (o.preventDefault(), te.value = t.value, et.visit(t.value, a));
-      }
-    };
-  }
+}, Uo = (r) => {
+  const e = Do();
+  te.value || (te.value = `${e.value.origin}${e.value.pathname}`);
+  const t = To(r.to), n = Xr(), a = Co(n);
+  return {
+    route: ye(() => ({ href: t.value })),
+    isExactActive: ye(() => te.value === t.value),
+    isActive: ye(() => te.value.startsWith(t.value)),
+    navigate(o) {
+      o.shiftKey || o.metaKey || o.ctrlKey || (o.preventDefault(), te.value = t.value, et.visit(t.value, a));
+    }
+  };
+}, Wo = {
+  name: "RouterLink",
+  useLink: Uo
 }, jo = {
   install: (r) => {
-    r.component("RouterLink", Uo);
+    r.component("RouterLink", Wo);
   }
 };
 export {
-  Go as useInertiaRoutes,
+  ko as useInertiaRoutes,
   To as useResolvedRoute,
   rt as useRoute,
   jo as vuetifyRoutesPlugin
