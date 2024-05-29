@@ -75,6 +75,7 @@ setup({ app, props, plugin }) {
 import { useRoute } from "inertiaRoutes";
 const route = useRoute();
 
+
 console.log(route("home"));
 ```
 
