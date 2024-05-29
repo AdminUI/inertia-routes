@@ -28,11 +28,11 @@ import { resolve } from "node:path";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-	resolve: {
-		alias: {
-			inertiaRoutes: resolve("vendor/adminui/inertia-routes"),
-		},
-	},
+    resolve: {
+        alias: {
+            inertiaRoutes: resolve("vendor/adminui/inertia-routes"),
+        },
+    },
 });
 ```
 
