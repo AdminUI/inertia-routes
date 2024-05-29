@@ -17,8 +17,9 @@ export const useResolvedRoute = (routeProp) => {
 			return routeProp;
 		} else if (Array.isArray(routeProp)) {
 			const [path, params] = toValue(routeProp);
-			if (typeof params !== "object") return route(path);
+			if (!path) return "#";
+			else if (typeof params !== "object") return route(path);
 			else return route(path, toValue(params));
-		} else return route(routeProp);
+		} else return routeProp ? route(routeProp) : "#";
 	});
 };
