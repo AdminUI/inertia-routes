@@ -1,1 +1,0 @@
--   Restored Vue2 version as a separate "legacy" build without the Vuetify plugin

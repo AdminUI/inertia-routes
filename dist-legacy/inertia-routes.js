@@ -1346,10 +1346,10 @@ class Te {
         `^${o ? `(${this.wheres[a]})?` : this.wheres[a]}$`
       ).test(e[a] ?? ""))
         throw new Error(
-          `Ziggy error: '${a}' parameter does not match required format '${this.wheres[a]}' for route '${this.name}'.`
+          `Ziggy error: '${a}' parameter '${e[a]}' does not match required format '${this.wheres[a]}' for route '${this.name}'.`
         );
       return encodeURI(e[a] ?? "").replace(/%7C/g, "|").replace(/%25/g, "%").replace(/\$/g, "%24");
-    }).replace(`${this.origin}//`, `${this.origin}/`).replace(/\/+$/, "") : this.template;
+    }).replace(this.config.absolute ? /(\.[^/]+?)(\/\/)/ : /(^)(\/\/)/, "$1/").replace(/\/+$/, "") : this.template;
   }
 }
 class so extends String {
