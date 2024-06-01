@@ -1576,9 +1576,9 @@ const ho = (r) => {
         return r;
       if (Array.isArray(r)) {
         const [t, n] = Se(r);
-        return typeof n != "object" ? e(t) : e(t, Se(n));
+        return t ? typeof n != "object" ? e(t) : e(t, Se(n)) : "#";
       } else
-        return e(r);
+        return r ? e(r) : "#";
     } else
       return console.warn("[Inertia Routes] You must pass a route string or tuple to useRouteProp"), "#";
   });
