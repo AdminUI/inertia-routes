@@ -6,11 +6,14 @@
 	"main": "./dist/inertia-routes.cjs",
 	"module": "./dist/inertia-routes.js",
 	"exports": {
-		".": "./dist/inertia-routes.js"
+		".": "./dist/inertia-routes.js",
+		"./vue2": "./dist-legacy/inertia-routes.js"
 	},
 	"scripts": {
 		"dev": "vite build --mode development --watch",
 		"build": "vite build",
+		"build:legacy": "vite build -c vite-legacy.config.js",
+		"build:all": "npm run build && npm run build:legacy",
 		"lint": "eslint resources --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
 	},
 	"keywords": [
@@ -32,10 +35,11 @@
 		"qs": "^6.12.1"
 	},
 	"peerDependencies": {
-		"vue": ">=3.0.0"
+		"vue": "^2.7.0 || >=3.0.0"
 	},
 	"devDependencies": {
 		"@vitejs/plugin-vue": "^5.0.4",
+		"@vitejs/plugin-vue2": "^2.3.1",
 		"eslint": "^8.57.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-vue": "^9.26.0",

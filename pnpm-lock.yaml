@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@vueuse/core':
         specifier: ^10.9.0
-        version: 10.9.0(vue@3.4.27)
+        version: 10.9.0
       qs:
         specifier: ^6.12.1
         version: 6.12.1
@@ -20,7 +20,10 @@ importers:
     devDependencies:
       '@vitejs/plugin-vue':
         specifier: ^5.0.4
-        version: 5.0.4(vite@5.2.11)(vue@3.4.27)
+        version: 5.0.4(vite@5.2.11)
+      '@vitejs/plugin-vue2':
+        specifier: ^2.3.1
+        version: 2.3.1(vite@5.2.11)
       eslint:
         specifier: ^8.57.0
         version: 8.57.0
@@ -326,6 +329,13 @@ packages:
 
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
+
+  '@vitejs/plugin-vue2@2.3.1':
+    resolution: {integrity: sha512-/ksaaz2SRLN11JQhLdEUhDzOn909WEk99q9t9w+N12GjQCljzv7GyvAbD/p20aBUjHkvpGOoQ+FCOkG+mjDF4A==}
+    engines: {node: ^14.18.0 || >= 16.0.0}
+    peerDependencies:
+      vite: ^3.0.0 || ^4.0.0 || ^5.0.0
+      vue: ^2.7.0-0
 
   '@vitejs/plugin-vue@5.0.4':
     resolution: {integrity: sha512-WS3hevEszI6CEVEx28F8RjTX97k3KsrcY6kvTg7+Whm5y3oYvcqzVeGCU3hxSAn4uY2CLCkeokkGKpoctccilQ==}
@@ -1094,10 +1104,13 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vitejs/plugin-vue@5.0.4(vite@5.2.11)(vue@3.4.27)':
+  '@vitejs/plugin-vue2@2.3.1(vite@5.2.11)':
     dependencies:
       vite: 5.2.11
-      vue: 3.4.27
+
+  '@vitejs/plugin-vue@5.0.4(vite@5.2.11)':
+    dependencies:
+      vite: 5.2.11
 
   '@vue/compiler-core@3.4.27':
     dependencies:
@@ -1152,21 +1165,21 @@ snapshots:
 
   '@vue/shared@3.4.27': {}
 
-  '@vueuse/core@10.9.0(vue@3.4.27)':
+  '@vueuse/core@10.9.0':
     dependencies:
       '@types/web-bluetooth': 0.0.20
       '@vueuse/metadata': 10.9.0
-      '@vueuse/shared': 10.9.0(vue@3.4.27)
-      vue-demi: 0.14.7(vue@3.4.27)
+      '@vueuse/shared': 10.9.0
+      vue-demi: 0.14.7
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
 
   '@vueuse/metadata@10.9.0': {}
 
-  '@vueuse/shared@10.9.0(vue@3.4.27)':
+  '@vueuse/shared@10.9.0':
     dependencies:
-      vue-demi: 0.14.7(vue@3.4.27)
+      vue-demi: 0.14.7
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
@@ -1676,9 +1689,7 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  vue-demi@0.14.7(vue@3.4.27):
-    dependencies:
-      vue: 3.4.27
+  vue-demi@0.14.7: {}
 
   vue-eslint-parser@9.4.2(eslint@8.57.0):
     dependencies:
