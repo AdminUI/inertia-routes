@@ -1,4 +1,6 @@
-import { computed, toValue } from "vue";
+import { computed } from "vue";
+// Using @vueuse version of toValue to allow Vue2 compatibility
+import { toValue } from "@vueuse/core";
 import { useRoute } from "./useRoute";
 
 /**
