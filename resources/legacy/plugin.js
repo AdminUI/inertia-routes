@@ -5,9 +5,10 @@ import { route } from "ziggy";
 const ziggy = reactive({});
 
 export default function (props) {
-	if (props.initialPage.props.ziggy) {
-		Object.keys(props.initialPage.props.ziggy).forEach((key) => {
-			ziggy[key] = props.initialPage.props.ziggy[key];
+	const ziggyProps = props?.props?.initialPage?.props?.ziggy ?? null;
+	if (ziggyProps) {
+		Object.keys(ziggyProps).forEach((key) => {
+			ziggy[key] = ziggyProps[key];
 		});
 		ziggy.location = new URL(ziggy.location);
 	}

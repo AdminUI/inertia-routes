@@ -1346,10 +1346,10 @@ class De {
         `^${o ? `(${this.wheres[a]})?` : this.wheres[a]}$`
       ).test(e[a] ?? ""))
         throw new Error(
-          `Ziggy error: '${a}' parameter '${e[a]}' does not match required format '${this.wheres[a]}' for route '${this.name}'.`
+          `Ziggy error: '${a}' parameter does not match required format '${this.wheres[a]}' for route '${this.name}'.`
         );
       return encodeURI(e[a] ?? "").replace(/%7C/g, "|").replace(/%25/g, "%").replace(/\$/g, "%24");
-    }).replace(this.config.absolute ? /(\.[^/]+?)(\/\/)/ : /(^)(\/\/)/, "$1/").replace(/\/+$/, "") : this.template;
+    }).replace(`${this.origin}//`, `${this.origin}/`).replace(/\/+$/, "") : this.template;
   }
 }
 class po extends String {
@@ -1555,16 +1555,18 @@ function yo(r, e, t, n) {
 }
 const K = qr({});
 function ho(r) {
-  return r.initialPage.props.ziggy && (Object.keys(r.initialPage.props.ziggy).forEach((e) => {
-    K[e] = r.initialPage.props.ziggy[e];
+  var t, n, a;
+  const e = ((a = (n = (t = r == null ? void 0 : r.props) == null ? void 0 : t.initialPage) == null ? void 0 : n.props) == null ? void 0 : a.ziggy) ?? null;
+  return e && (Object.keys(e).forEach((o) => {
+    K[o] = e[o];
   }), K.location = new URL(K.location)), {
-    install: (e, { mixin: t = !1 } = {}) => {
-      const n = (a, o, i, f = K) => (K.location && typeof window < "u" && (K.location = null), yo(a, o, i, f));
-      e.provide(mr, n), t === !0 && e.mixin({
+    install: (o, { mixin: i = !1 } = {}) => {
+      const f = (l, s, c, p = K) => (K.location && typeof window < "u" && (K.location = null), yo(l, s, c, p));
+      o.provide(mr, f), i === !0 && o.mixin({
         methods: {
-          route: n
+          route: f
         }
-      }), e.prototype.$route = n;
+      }), o.prototype.$route = f;
     }
   };
 }
