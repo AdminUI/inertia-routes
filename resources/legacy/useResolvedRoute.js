@@ -1,4 +1,5 @@
-import { computed, toValue } from "vue";
+import { computed } from "vue";
+import { toValue } from "@vueuse/core";
 import { useRoute } from "./useRoute";
 
 /**

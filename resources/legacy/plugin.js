@@ -1,5 +1,4 @@
 import { reactive } from "vue";
-import { routeKey } from "../useRoute";
 import { route } from "ziggy";
 
 const ziggy = reactive({});
@@ -23,7 +22,6 @@ export default function (props) {
 				return route(name, params, absolute, config);
 			};
 
-			Vue.provide(routeKey, routeFunction);
 			if (mixin === true) {
 				Vue.mixin({
 					methods: {
