@@ -1638,11 +1638,11 @@ class qr {
    */
   matchesUrl(r) {
     if (!this.definition.methods.includes("GET")) return !1;
-    const n = this.template.replace(/(\/?){([^}?]*)(\??)}/g, (S, y, A, m) => {
+    const n = this.template.replace(/[.*+$()[\]]/g, "\\$&").replace(/(\/?){([^}?]*)(\??)}/g, (S, y, A, m) => {
       var h;
       const d = `(?<${A}>${((h = this.wheres[A]) == null ? void 0 : h.replace(/(^\^)|(\$$)/g, "")) || "[^/?]+"})`;
       return m ? `(${y}${d})?` : `${y}${d}`;
-    }).replace(/^\w+:\/\//, ""), [o, p] = r.replace(/^\w+:\/\//, "").split("?"), s = new RegExp(`^${n}/?$`).exec(decodeURI(o));
+    }).replace(/^\w+:\/\//, ""), [o, p] = r.replace(/^\w+:\/\//, "").split("?"), s = new RegExp(`^${n}/?$`).exec(o) ?? new RegExp(`^${n}/?$`).exec(decodeURI(o));
     if (s) {
       for (const S in s.groups)
         s.groups[S] = typeof s.groups[S] == "string" ? decodeURIComponent(s.groups[S]) : s.groups[S];
@@ -1666,10 +1666,10 @@ class qr {
         `^${s ? `(${this.wheres[p]})?` : this.wheres[p]}$`
       ).test(r[p] ?? ""))
         throw new Error(
-          `Ziggy error: '${p}' parameter does not match required format '${this.wheres[p]}' for route '${this.name}'.`
+          `Ziggy error: '${p}' parameter '${r[p]}' does not match required format '${this.wheres[p]}' for route '${this.name}'.`
         );
       return encodeURI(r[p] ?? "").replace(/%7C/g, "|").replace(/%25/g, "%").replace(/\$/g, "%24");
-    }).replace(`${this.origin}//`, `${this.origin}/`).replace(/\/+$/, "") : this.template;
+    }).replace(this.config.absolute ? /(\.[^/]+?)(\/\/)/ : /(^)(\/\/)/, "$1/").replace(/\/+$/, "") : this.template;
   }
 }
 class Bn extends String {
@@ -1789,6 +1789,12 @@ class Bn extends String {
     const { params: r, query: n } = this._unresolve();
     return { ...r, ...n };
   }
+  get routeParams() {
+    return this._unresolve().params;
+  }
+  get queryParams() {
+    return this._unresolve().query;
+  }
   /**
    * Check whether the given route exists.
    *
@@ -1796,7 +1802,7 @@ class Bn extends String {
    * @return {Boolean}
    */
   has(r) {
-    return Object.keys(this._config.routes).includes(r);
+    return this._config.routes.hasOwnProperty(r);
   }
   /**
    * Parse Laravel-style route parameters of any type into a normalized object.

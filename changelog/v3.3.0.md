@@ -1,0 +1,3 @@
+- **Feature**: Support new Inertia V2 features through the `prefetch` and `cache-for` props
+- **Improvement**: Added `on-cancel-token`, `async` and `except` prop handling to Vuetify router components
+- **BugFix**: Use proper kebab format for `query-string-array-format` prop handling
