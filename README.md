@@ -17,29 +17,28 @@ A Vue plugin is also provided which offers both a `composable` function to resol
 
 ## Installation
 
-`composer require adminui/inertia-routes`
+### PHP
 
-> vite.config.js
+```sh
+composer require adminui/inertia-routes
+```
 
-Add the following settings to your config
+### JavaScript
 
-```js
-import { resolve } from "node:path";
-import { defineConfig } from "vite";
+After running the composer function above, you can link the JavaScript package by doing the following:
 
-export default defineConfig({
-    resolve: {
-        alias: {
-            inertiaRoutes: resolve("vendor/adminui/inertia-routes"),
-        },
-    },
-});
+```sh
+pnpm add ./vendor/adminui/inertia-routes
+# OR
+npm install ./vendor/adminui/inertia-routes
+# OR
+yarn add ./vendor/adminui/inertia-routes
 ```
 
 > app.js
 
 ```js
-import { useInertiaRoutes } from "inertiaRoutes";
+import { useInertiaRoutes } from "@adminui/inertia-routes";
 
 setup({ el, App, props, plugin }) {
     const inertiaRoutesPlugin = useInertiaRoutes(props);
@@ -54,7 +53,7 @@ setup({ el, App, props, plugin }) {
 > ssr.js
 
 ```js
-import { useInertiaRoutes } from "inertiaRoutes";
+import { useInertiaRoutes } from "@adminui/inertia-routes";
 
 setup({ app, props, plugin }) {
     const inertiaRoutesPlugin = useInertiaRoutes(props);
@@ -72,9 +71,8 @@ setup({ app, props, plugin }) {
 > Composition API
 
 ```js
-import { useRoute } from "inertiaRoutes";
+import { useRoute } from "@adminui/inertia-routes";
 const route = useRoute();
-
 
 console.log(route("home"));
 ```
@@ -120,12 +118,20 @@ or if you need to pass route parameters, send a tuple instead:
 </template>
 ```
 
+All router-enabled components in Vuetify also support any `Link` props from InertiaJS:
+
+```html
+<template>
+	<v-btn prefetch cache-for="20s" :to="['pages.testimonials', { company: "acme-inc" }]"> Read Acme Inc's Review </v-btn>
+</template>
+```
+
 ### Installation
 
 ```js
 import { createApp, h } from "vue";
 import { createInertiaApp } from "@inertiajs/vue3";
-import { useInertiaRoutes, vuetifyRoutesPlugin } from "inertiaRoutes";
+import { useInertiaRoutes, vuetifyRoutesPlugin } from "@adminui/inertia-routes";
 import { createVuetify } from "vuetify";
 
 const vuetify = createVuetify();
