@@ -1,1 +1,0 @@
-- **BugFix**: Restore git commit to workflow for changelog
