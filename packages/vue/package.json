@@ -15,6 +15,7 @@
 		"@inertiajs/vue3": "^2.0.0"
 	},
 	"devDependencies": {
+		"@inertiajs/core": "^2.0.12",
 		"@inertiajs/vue3": "^2.0.12",
 		"vue": "^3.5.0"
 	}
