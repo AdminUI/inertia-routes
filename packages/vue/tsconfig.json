@@ -1,0 +1,17 @@
+{
+	"include": ["index.ts","global.d.ts"],
+	"compilerOptions": {
+		"rootDir": ".",
+		"target": "ES2020",
+		"declaration": true,
+		"declarationDir": "../../dist/vue/types",
+		"module": "ES2020",
+		"moduleResolution": "Node",
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"removeComments": true,
+		"paths": {
+			"ziggy": ["../../vendor/tightenco/ziggy/src/js"]
+		}
+	}
+}

@@ -13,7 +13,8 @@
 		"php": "^8.0.2",
 		"inertiajs/inertia-laravel": "^0.6.0|^1.0|^2.0",
 		"laravel/framework": "^9.0|^10.0|^11.0|^12.0",
-		"tightenco/ziggy": "^2.0"
+		"tightenco/ziggy": "^2.0",
+		"pixelfear/composer-dist-plugin": "^0.1.6"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^9.5|^10.0|^11.0|^12.0",
@@ -32,11 +33,15 @@
 			"providers": [
 				"AdminUI\\InertiaRoutes\\InertiaRoutesProvider"
 			]
+		},
+		"download-dist": {
+			"url": "https://github.com/AdminUI/inertia-routes/releases/download/{$version}/dist.tar.gz"
 		}
 	},
 	"config": {
 		"allow-plugins": {
-			"pestphp/pest-plugin": true
+			"pestphp/pest-plugin": true,
+			"pixelfear/composer-dist-plugin": true
 		}
 	},
 	"scripts": {

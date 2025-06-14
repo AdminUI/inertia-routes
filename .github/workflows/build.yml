@@ -88,14 +88,14 @@ jobs:
             - name: Use Node.js
               uses: actions/setup-node@v3
               with:
-                  node-version: 20
+                  node-version: 22
                   cache: "pnpm"
 
             - name: Install dependencies
               run: pnpm install
 
             - name: Build JavaScript
-              run: "npm run lint && npm run build && npm run build:legacy"
+              run: "npm run lint && npm run build"
 
             - name: Process changelog
               id: changelog_path
@@ -110,14 +110,8 @@ jobs:
               env:
                   TAG: ${{ needs.tag.outputs.new_tag }}
 
-            - name: Commit changes
-              continue-on-error: true
-              run: |
-                  git config --global user.email  "github@adminui.co.uk"
-                  git config --global user.name  "AdminUI Action"
-                  git add .
-                  git commit -m "Github Action compiled resources"
-                  git push --force
+            - name: Create zip
+              run: tar -czvf dist.tar.gz dist
 
             - name: Create Github release
               id: create_release
@@ -130,3 +124,13 @@ jobs:
                   body_path: changelog/${{ steps.changelog_path.outputs.changelog }}.md
                   draft: false
                   prerelease: false
+
+            - name: Upload zip to release
+              uses: actions/upload-release-asset@v1.0.1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ./dist.tar.gz
+                  asset_name: dist.tar.gz
+                  asset_content_type: application/tar+gz

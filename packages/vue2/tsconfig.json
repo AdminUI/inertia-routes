@@ -1,0 +1,17 @@
+{
+	"include": ["index.ts","global.d.ts"],
+	"compilerOptions": {
+		"rootDir": ".",
+		"target": "ES6",
+		"declaration": true,
+		"declarationDir": "../../dist/vue2/types",
+		"module": "ES6",
+		"moduleResolution": "Node",
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"removeComments": true,
+		"paths": {
+			"ziggy": ["../../vendor/tightenco/ziggy/src/js"]
+		}
+	}
+}

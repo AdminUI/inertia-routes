@@ -1,0 +1,22 @@
+{
+    "version": "0.2",
+    "ignorePaths": [],
+    "dictionaryDefinitions": [],
+    "dictionaries": [],
+    "words": [
+        "camelise",
+        "testbench"
+    ],
+    "ignoreWords": [
+        "anothr",
+        "czvf",
+        "invision",
+        "mbstring",
+        "pestphp",
+        "phpunit",
+        "pixelfear",
+        "shivammathur",
+        "tightenco"
+    ],
+    "import": []
+}

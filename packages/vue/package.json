@@ -1,0 +1,16 @@
+{
+	"name": "@adminui/inertia-routes__vue",
+	"version": "1.0.0",
+	"description": "",
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"build": "rm -rf ../../dist/vue && ./build.js && tsc --emitDeclarationOnly --skipLibCheck"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"peerDependencies": {
+		"vue": "^3.5.0"
+	}
+}
