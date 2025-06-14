@@ -110,6 +110,15 @@ jobs:
               env:
                   TAG: ${{ needs.tag.outputs.new_tag }}
 
+            - name: Commit changes
+              continue-on-error: true
+              run: |
+                  git config --global user.email  "github@adminui.co.uk"
+                  git config --global user.name  "AdminUI Action"
+                  git add .
+                  git commit -m "Github Action compiled changelog"
+                  git push
+
             - name: Create zip
               run: tar -czvf dist.tar.gz dist
 

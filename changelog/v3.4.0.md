@@ -1,0 +1,4 @@
+- **Improvement**: Moved to a package structure to enable future support for other Inertia frontend frameworks.
+- **Improvement**: Improved typing
+- **Improvement**: Remove compiled resources from repo and use `composer-dist-plugin` instead
+- **BugFix**: Properly unwrap any route props to maintain reactivity.
