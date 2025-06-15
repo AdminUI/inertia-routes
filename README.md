@@ -23,6 +23,9 @@ A Vue plugin is also provided which offers both a `composable` function to resol
 composer require adminui/inertia-routes
 ```
 
+> [!IMPORTANT]
+> When requiring this package, you'll be asked to allow the `pixelfear/composer-dist-plugin` Composer plugin. This is used to download the JavaScript assets for the package and must be accepted.
+
 ### JavaScript
 
 After running the composer function above, you can link the JavaScript package by doing the following:
