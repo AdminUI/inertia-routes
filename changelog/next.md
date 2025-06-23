@@ -1,2 +1,3 @@
 - **Improvement**: Remove `resources` directory, which is no longer used
+- **Improvement**: Remove old vite build configs
 - **BugFix**: Revert default of `absolute` prop to `true`
