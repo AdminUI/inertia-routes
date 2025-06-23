@@ -1,0 +1,2 @@
+- **Improvement**: Remove `resources` directory, which is no longer used
+- **BugFix**: Revert default of `absolute` prop to `true`

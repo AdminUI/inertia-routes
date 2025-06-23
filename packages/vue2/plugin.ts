@@ -39,7 +39,7 @@ export default function (props: InertiaAppProps) {
 			const routeFunction = ((...args: Parameters<typeof route>): ReturnType<typeof route> => {
 				args[0] ??= undefined;
 				args[1] ??= undefined;
-				args[2] ??= false;
+				args[2] ??= true;
 				args[3] ??= ziggy as Config;
 				// When global is available, drop the preloaded location to allow dynamic reading
 				if (ziggy.location && typeof window !== "undefined") {

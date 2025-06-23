@@ -6,10 +6,12 @@ export type RouteProp = MaybeRefOrGetter<string | [string, Record<string, unknow
 export const useResolvedRoute = (routeProp: RouteProp): ComputedRef<string> => {
 	const route = useRoute();
 	return computed(() => {
+		// Extract the raw value of the routeProp
 		let routePropValue = toValue(routeProp);
 		while (isRef(routePropValue)) {
 			routePropValue = toValue(routePropValue as RouteProp);
 		}
+		// Empty
 		if (!routePropValue) {
 			console.warn("[Inertia Routes] You must pass a route string or tuple to useRouteProp");
 			return "#";
