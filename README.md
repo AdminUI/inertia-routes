@@ -101,6 +101,136 @@ export default {
 <inertia-link :href="$route('home')">Home Page</inertia-link>
 ```
 
+## Extended Form Helper
+
+The Vue3 package offers a bonus export in the form of `useExtendedForm`. This composable supercharges the standard Inertia form helper by connecting with the Laravel controller, and accessing your **FormRequest** rules to provide the following features:
+
+- Automatic form hydration, no need to pass a data object
+- Resolves your route and uses it for submission methods
+- Infers necessary HTML attributes based on Laravel validation rules
+- Adds `required` to inputs when present in the ruleset
+- Automatic `v-model` binding
+
+Then for Vuetify:
+
+- Binds your error messages for each field automatically to the `error-messages` prop
+- Passes a label field derived from the field name
+
+> [!TIP]
+> If you want your required fields to stand out, try adding
+>
+> ```
+> .v-field__field:has(input[required]) .v-field-label::after {
+> 	content: "*";
+> 	color: rgb(var(--v-theme-error));
+> }
+> ```
+>
+> to your stylesheet
+
+### Example
+
+```html
+<script setup>
+	import { useExtendedForm } from "@adminui/inertia-routes";
+
+	const form = useExtendedForm("about.store", {
+		framework: "vuetify",
+	});
+</script>
+
+<template>
+	<VForm @submit.prevent="form.post()">
+		<VTextField v-bind="form.bind.name" />
+		<VBtn type="submit">Submit</VBtn>
+	</VForm>
+</template>
+```
+
+You can use any of the normal form methods like "submit", "get", "post", "patch", "put" and "delete". The only difference is that now the URL is not required.
+
+Then all you need is your Laravel controller is a `FormRequest` class binding to receive the request:
+
+```php
+public function store(CreateUserRequest $request)
+{
+	//
+}
+```
+
+Then when you want to submit your form, simply call:
+
+```js
+const onSubmit = () => {
+	form.post();
+};
+```
+
+_or_
+
+```js
+const onSubmit = () => {
+	form.post("/override-the-url");
+};
+```
+
+_or_
+
+```js
+const onSubmit = () => {
+	form.post({
+		only: ["users"], // Pass Inertia visit options
+	});
+};
+```
+
+_or_
+
+```js
+const onSubmit = () => {
+	form.post("/override-the-url", {
+		only: ["users"], // Override URL and pass Inertia visit options
+	});
+};
+```
+
+> [!TIP]
+> If you usually validate your request input inside the controller, this won't work. You _must_ use a FormRequest class
+
+### Props
+
+The following props can be passed to `useExtendedForm`:
+
+| **Arg**               | **Type**    | **Default** | **Description**                                                               |
+| --------------------- | ----------- | ----------- | ----------------------------------------------------------------------------- |
+| `routeName`           | `RouteProp` | _required_  | Either a string route name, or a tuple with [routeName, routeParams (object)] |
+| `options`             | `object`    |             |                                                                               |
+| `options.rememberKey` | `string`    | None        | Inertia form key to store data/errors in history state                        |
+| `options.data`        | `object`    | None        | Any default data needed to pass to `useForm`                                  |
+| `options.framework`   | `Framework` | "none"      | Currently "none" or "vuetify", add extra bindings to Vuetify inputs           |
+| `options.autoHydrate` | `boolean`   | true        | Infer form fields and default values from your controller form request        |
+| `options.model`       | `boolean`   | true        | Include v-model in the automatic bindings for each input                      |
+
+### Advanced Example
+
+```js
+import { useExtendedForm } from "@adminui/inertia-routes";
+
+const form = useExtendedForm(
+	[
+		"users.store",
+		{
+			account: props.account.id,
+		},
+	],
+	{
+		data: { name: `${props.account.name} user` },
+		framework: "vuetify",
+		model: false,
+	},
+);
+```
+
 ## Vuetify 3 Plugin
 
 The package also offers a new plugin for Vuetify 3-based projects. This plugin enables `Inertia Routes` support for the `to` parameter on any applicable components.
@@ -203,3 +333,14 @@ What this library does is tweak option 4 as well as adding extra functionality. 
 The extra configuration options also allow you to set `group`, `only` and `except` options that only affect your frontend Ziggy routes. This can be helpful if you have separate Inertia apps running your backend and frontend and you wish to include only a subset of your total routes.
 
 > AdminUI is a product of [evoMark](https://evomark.co.uk)
+
+## Support Open-Source Software
+
+We're providing this package free-of-charge to the community. However, all development and maintenance costs time, energy and money. So please help fund this project if you can.
+
+<p align="center" style="display:flex;align-items:center;gap:1rem;justify-content:center">
+<a href="https://github.com/sponsors/craigrileyuk" target="_blank">
+<img src="https://img.shields.io/badge/sponsor-GitHub%20Sponsors-fafbfc?style=for-the-badge&logo=github">
+</a>
+<a href="https://www.buymeacoffee.com/craigrileyuk" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+</p>

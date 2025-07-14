@@ -1,9 +1,11 @@
 import { type FormDataConvertible, type VisitOptions, type Method } from "@inertiajs/core";
 import { useForm, type InertiaForm } from "@inertiajs/vue3";
-import { computed, type ComputedRef, ref, toValue } from "vue";
+import { computed, type ComputedRef, ref, toValue, watch } from "vue";
 import axios from "axios";
 import { useResolvedRoute, type RouteProp } from "./useResolvedRoute";
-import { intersection } from "es-toolkit";
+import { intersection, last, startCase, memoize } from "es-toolkit";
+
+type Framework = "vuetify" | "none";
 
 type FormDataType = Record<string, FormDataConvertible>;
 type FormOptions = Omit<VisitOptions, "data">;
@@ -12,7 +14,7 @@ type ExtendedForm<TForm extends FormDataType> = Omit<
 	InertiaForm<TForm>,
 	"submit" | "get" | "post" | "patch" | "put" | "delete"
 > & {
-	bind: ComputedRef<Record<keyof TForm, FormFieldBinding>>;
+	bind: Record<keyof TForm, ComputedRef<FormFieldBinding>>;
 	get: (maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => void;
 	post: (maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => void;
 	patch: (maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => void;
@@ -22,10 +24,60 @@ type ExtendedForm<TForm extends FormDataType> = Omit<
 };
 
 interface FormFieldBinding {
-	name: string;
+	name?: string;
+	label?: string;
 	required?: boolean;
 	type?: "email" | "text" | "password";
+	minlength?: number;
+	maxlength?: number;
+	counter?: boolean;
+	step?: number;
+	accept?: string;
 	"error-messages"?: Record<string, string[]>;
+	modelValue?: unknown;
+	"onUpdate:modelValue"?: (newValue: unknown) => void;
+}
+
+const STRING_RULES = ["string", "email", "url", "uuid", "ulid", "alpha", "alpha_dash", "alpha_num"];
+const NUMBER_RULES = ["decimal", "digits", "integer", "numeric"];
+const BOOLEAN_RULES = ["boolean", "accepted", "declined"];
+const FILE_RULES = ["file", "image", "image:allow_svg"];
+
+function addInputBindings(value: string[], framework: Framework = "none"): FormFieldBinding {
+	const obj = {} as Partial<FormFieldBinding>;
+	const isString = intersection(value, STRING_RULES)?.length > 0;
+	const isNumber = intersection(value, NUMBER_RULES)?.length > 0;
+	const isFile = intersection(value, FILE_RULES)?.length > 0;
+
+	if (value.includes("required")) {
+		obj.required = true;
+	}
+	if (value.includes("email")) {
+		obj.type = "email";
+	}
+	let min: string;
+	let max: string;
+	let step: string;
+	let accept: string;
+	if (isString && (min = value.find((rule) => /^min:\d+$/.test(rule)))) {
+		obj.minlength = +last(min.split(":"));
+		if (framework === "vuetify") {
+			obj.counter = true;
+		}
+	}
+	if (isString && (max = value.find((rule) => /^max:\d+$/.test(rule)))) {
+		obj.maxlength = +last(max.split(":"));
+		if (framework === "vuetify") {
+			obj.counter = true;
+		}
+	}
+	if (isNumber && (step = value.find((rule) => /^multiple_of:\d+$/.test(rule)))) {
+		obj.step = +last(step.split(":"));
+	}
+	if (isFile && (accept = value.find((rule) => /^mimetypes:/.test(rule)))) {
+		obj.accept = last(accept.split(":"));
+	}
+	return obj;
 }
 
 export function useExtendedForm<TForm extends FormDataType>(
@@ -33,14 +85,15 @@ export function useExtendedForm<TForm extends FormDataType>(
 	options: {
 		rememberKey: string;
 		data?: TForm | (() => TForm);
-		framework: "vuetify" | "none";
+		framework: Framework;
 		autoHydrate?: boolean;
+		model?: boolean;
 	},
 ): ExtendedForm<TForm> {
-	const { rememberKey, data, framework = "none", autoHydrate = true } = options;
+	const { rememberKey, data, framework = "none", autoHydrate = true, model = true } = options;
 	const resolvedRoute = useResolvedRoute(routeName);
 
-	const _form = !!rememberKey
+	const _form = rememberKey
 		? useForm<TForm>(rememberKey, data as TForm | (() => TForm))
 		: useForm<TForm>(data as TForm | (() => TForm));
 
@@ -53,7 +106,8 @@ export function useExtendedForm<TForm extends FormDataType>(
 		delete: _form.delete.bind(_form),
 	};
 	const extendedForm = _form as ExtendedForm<TForm>;
-	const _formMeta = ref({});
+
+	const _formMeta = ref<Record<string, string[]>>({});
 
 	const getFormDefaults = () => {
 		return Object.keys(_formMeta.value).reduce((acc, curr) => {
@@ -61,16 +115,13 @@ export function useExtendedForm<TForm extends FormDataType>(
 			let defaultValue: unknown;
 			if (!rules || !Array.isArray(rules)) {
 				defaultValue = null;
-			} else if (
-				intersection(rules, ["string", "email", "url", "uuid", "ulid", "alpha", "alpha_dash", "alpha_num"])
-					.length
-			) {
+			} else if (intersection(rules, STRING_RULES).length) {
 				defaultValue = "";
 			} else if (intersection(rules, ["array"])) {
 				defaultValue = [];
-			} else if (intersection(rules, ["decimal", "digits", "integer", "numeric"])) {
+			} else if (intersection(rules, NUMBER_RULES)) {
 				defaultValue = 0;
-			} else if (intersection(rules, ["boolean", "accepted", "declined"])) {
+			} else if (intersection(rules, BOOLEAN_RULES)) {
 				defaultValue = false;
 			}
 			acc[curr] = Object.hasOwn(_form, curr) ? _form[curr] : defaultValue;
@@ -105,50 +156,60 @@ export function useExtendedForm<TForm extends FormDataType>(
 		const { url, visitOptions } = resolveRequestOptions(maybeUrlOrOptions, maybeOptions);
 		original.submit(method, url, visitOptions);
 	};
-	extendedForm.get = (maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => {
-		const { url, visitOptions } = resolveRequestOptions(maybeUrlOrOptions, maybeOptions);
-		original.get(url, visitOptions);
-	};
-	extendedForm.post = (maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => {
-		const { url, visitOptions } = resolveRequestOptions(maybeUrlOrOptions, maybeOptions);
-		original.post(url, visitOptions);
-	};
-	extendedForm.put = (maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => {
-		const { url, visitOptions } = resolveRequestOptions(maybeUrlOrOptions, maybeOptions);
-		original.put(url, visitOptions);
-	};
-	extendedForm.patch = (maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => {
-		const { url, visitOptions } = resolveRequestOptions(maybeUrlOrOptions, maybeOptions);
-		original.patch(url, visitOptions);
-	};
-	extendedForm.delete = (maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => {
-		const { url, visitOptions } = resolveRequestOptions(maybeUrlOrOptions, maybeOptions);
-		original.delete(url, visitOptions);
-	};
 
-	extendedForm.bind = computed(
-		() =>
-			Object.fromEntries(
-				Object.entries(_formMeta.value).map(([field, value]) => {
-					if (Array.isArray(value) === false) {
-						return [field, {}];
-					}
-					const bind = {
-						name: field,
-					} as Partial<FormFieldBinding>;
-					if (value.includes("required")) {
-						bind.required = true;
-					}
-					if (value.includes("email")) {
-						bind.type = "email";
-					}
-					if (framework === "vuetify") {
-						bind["error-messages"] = _form.errors[field];
-					}
-					return [field, bind];
-				}),
-			) as Record<keyof TForm, FormFieldBinding>,
+	(["get", "post", "put", "patch", "delete"] as const).forEach((method) => {
+		extendedForm[method] = (maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => {
+			const { url, visitOptions } = resolveRequestOptions(maybeUrlOrOptions, maybeOptions);
+			original[method](url, visitOptions);
+		};
+	});
+
+	const memoisedAddInputBindings = memoize(
+		({ value, framework }) => {
+			return addInputBindings(value, framework);
+		},
+		{
+			getCacheKey: ({ value, framework }) => JSON.stringify([value, framework]),
+		},
 	);
+
+	function fieldBindFactory(field) {
+		return computed(() => {
+			const metaValue = _formMeta.value[field];
+			if (Array.isArray(metaValue) === false) {
+				return {};
+			}
+			const bind = {
+				name: field,
+			} as Partial<FormFieldBinding>;
+			const inputBindings = memoisedAddInputBindings({ value: metaValue, framework });
+			for (const inputBinding in inputBindings) {
+				bind[inputBinding] = inputBindings[inputBinding];
+			}
+
+			if (framework === "vuetify") {
+				bind.label = startCase(field);
+				bind["error-messages"] = _form.errors[field];
+			}
+
+			if (model) {
+				bind.modelValue = _form[field];
+				/** @ts-expect-error */
+				bind["onUpdate:modelValue"] = ($event) => (_form[field] = $event);
+			}
+			return bind;
+		});
+	}
+
+	extendedForm.bind = {} as Record<keyof TForm, ComputedRef<FormFieldBinding>>;
+	watch(_formMeta, (meta) => {
+		for (const field in meta) {
+			if (Object.prototype.hasOwnProperty.call(meta, field)) {
+				const typedField = field as keyof TForm;
+				extendedForm.bind[typedField] = fieldBindFactory(typedField);
+			}
+		}
+	});
 
 	return extendedForm;
 }
