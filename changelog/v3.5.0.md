@@ -1,0 +1,2 @@
+- **Feature**: [Vue3] Added new `useExtendedForm` composable for a super-charged Inertia form-helper
+- **Improvement**: Migrated from `lodash-es` to `es-toolkit`
