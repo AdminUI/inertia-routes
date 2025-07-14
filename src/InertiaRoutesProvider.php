@@ -3,8 +3,10 @@
 namespace AdminUI\InertiaRoutes;
 
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use AdminUI\InertiaRoutes\InertiaRoutesResponse;
+use AdminUI\InertiaRoutes\FormHelper\FormHelperController;
 
 class InertiaRoutesProvider extends ServiceProvider
 {
@@ -25,6 +27,8 @@ class InertiaRoutesProvider extends ServiceProvider
 	{
 		$this->packageSetup();
 		$kernel->prependMiddleware(InertiaRoutesMiddleware::class);
+
+		Route::post('/inertia-routes/form-helper', FormHelperController::class);
 	}
 
 	private function packageSetup()

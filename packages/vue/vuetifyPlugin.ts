@@ -1,10 +1,12 @@
 import { computed, useAttrs, ref, getCurrentInstance, onMounted, onUnmounted, type App } from "vue";
 import { router } from "@inertiajs/vue3";
+import type { Method } from "@inertiajs/core";
 import { useBrowserLocation } from "@vueuse/core";
 import { RouteProp, useResolvedRoute } from "./useResolvedRoute";
-import { lowerCase, omit, pick, castArray } from "lodash-es";
+import { lowerCase, omit, pick } from "es-toolkit";
+import { castArray } from "es-toolkit/compat";
 
-type ToCamelCase<T extends string> = T extends `${infer First}_${infer Rest}` // Handles cases with underscores
+type ToCamelCase<T extends string> = T extends `${infer First}-${infer Rest}` // Handles cases with underscores
 	? `${Lowercase<First>}${Capitalize<ToCamelCase<Rest>>}`
 	: T extends `${infer First}${infer Rest}` // Handles normal uppercase cases
 		? `${Lowercase<First>}${Rest}`
@@ -34,7 +36,9 @@ const inertiaLinkProps = [
 	"async",
 ] as const;
 
-type InertiaLinkPropMap = Record<ToCamelCase<(typeof inertiaLinkProps)[number]>, unknown>;
+type InertiaLinkPropMap = {
+	[K in ToCamelCase<(typeof inertiaLinkProps)[number]>]: K extends "method" ? Method : any;
+};
 
 export interface UseLinkProps extends InertiaLinkPropMap {
 	to: RouteProp;
@@ -46,7 +50,7 @@ const resolveValue = (key: string, value: unknown) => {
 		return true;
 	} else if (key === "prefetch") {
 		return !value ? ["hover"] : castArray(value);
-	} else if (["method"].includes(key)) {
+	} else if (["method"].includes(key) && typeof value === "string") {
 		return lowerCase(value);
 	} else return value;
 };

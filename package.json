@@ -23,6 +23,7 @@
 		}
 	},
 	"scripts": {
+		"dev": "pnpm -r build --watch",
 		"build": "pnpm -r build",
 		"lint": "npx eslint packages"
 	},
@@ -42,7 +43,7 @@
 	"license": "MIT",
 	"dependencies": {
 		"@vueuse/core": "^13.3.0",
-		"lodash-es": "^4.17.21",
+		"es-toolkit": "^1.39.7",
 		"qs": "^6.14.0"
 	},
 	"peerDependencies": {

@@ -2,10 +2,10 @@
 	"include": ["index.ts","global.d.ts"],
 	"compilerOptions": {
 		"rootDir": ".",
-		"target": "ES2020",
+		"target": "ES2022",
 		"declaration": true,
 		"declarationDir": "../../dist/vue/types",
-		"module": "ES2020",
+		"module": "ES2022",
 		"moduleResolution": "Node",
 		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
