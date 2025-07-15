@@ -1,1 +1,0 @@
-- **BugFix**: Have default value for `options` object in `useExtendedForm`
