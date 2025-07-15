@@ -80,17 +80,19 @@ function addInputBindings(value: string[], framework: Framework = "none"): FormF
 	return obj;
 }
 
+interface ExtendedFormOptions<TForm> {
+	rememberKey?: string;
+	data?: TForm | (() => TForm);
+	framework?: Framework;
+	autoHydrate?: boolean;
+	model?: boolean;
+}
+
 export function useExtendedForm<TForm extends FormDataType>(
 	routeName: RouteProp,
-	options: {
-		rememberKey: string;
-		data?: TForm | (() => TForm);
-		framework: Framework;
-		autoHydrate?: boolean;
-		model?: boolean;
-	},
+	options: ExtendedFormOptions<TForm> = {},
 ): ExtendedForm<TForm> {
-	const { rememberKey, data, framework = "none", autoHydrate = true, model = true } = options;
+	const { rememberKey, data = {}, framework = "none", autoHydrate = true, model = true } = options;
 	const resolvedRoute = useResolvedRoute(routeName);
 
 	const _form = rememberKey
