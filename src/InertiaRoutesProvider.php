@@ -12,7 +12,7 @@ class InertiaRoutesProvider extends ServiceProvider
 {
 	public function register()
 	{
-		// Register the packages facades
+		// Register the package's facades
 		$this->app->singleton('inertia-routes', function () {
 			return new InertiaRoutesResponse;
 		});
@@ -28,6 +28,7 @@ class InertiaRoutesProvider extends ServiceProvider
 		$this->packageSetup();
 		$kernel->prependMiddleware(InertiaRoutesMiddleware::class);
 
+		// Declare the endpoint for getting input inherence
 		Route::post('/inertia-routes/form-helper', FormHelperController::class);
 	}
 
