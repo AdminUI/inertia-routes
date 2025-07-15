@@ -1,0 +1,4 @@
+/tests 			export-ignore
+/resources 		export-ignore
+/.github 		export-ignore
+/node_modules 	export-ignore
