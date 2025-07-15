@@ -107,7 +107,7 @@ The Vue3 package offers a bonus export in the form of `useExtendedForm`. This co
 
 - Automatic form hydration, no need to pass a data object
 - Resolves your route and uses it for submission methods
-- Infers necessary HTML attributes based on Laravel validation rules
+- Infers necessary HTML attributes based on Laravel validation rules (required,minlength,maxlength,step,accept,type=email)
 - Adds `required` to inputs when present in the ruleset
 - Automatic `v-model` binding
 
@@ -115,6 +115,7 @@ Then for Vuetify:
 
 - Binds your error messages for each field automatically to the `error-messages` prop
 - Passes a label field derived from the field name
+- Activates counter for strings with a `min:NUM` or `max:NUM` validation
 
 > [!TIP]
 > If you want your required fields to stand out, try adding

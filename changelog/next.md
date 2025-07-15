@@ -1,0 +1,1 @@
+- **Improvement**: HTML attribute inference for `url` rule, `numeric` rule with `min` and `max`.

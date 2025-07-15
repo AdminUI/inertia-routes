@@ -27,9 +27,11 @@ interface FormFieldBinding {
 	name?: string;
 	label?: string;
 	required?: boolean;
-	type?: "email" | "text" | "password";
+	type?: "email" | "text" | "password" | "number" | "url";
 	minlength?: number;
 	maxlength?: number;
+	min?: number;
+	max?: number;
 	counter?: boolean;
 	step?: number;
 	accept?: string;
@@ -54,6 +56,8 @@ function addInputBindings(value: string[], framework: Framework = "none"): FormF
 	}
 	if (value.includes("email")) {
 		obj.type = "email";
+	} else if (value.some((v) => v.startsWith("url"))) {
+		obj.type = "url";
 	}
 	let min: string;
 	let max: string;
@@ -71,8 +75,19 @@ function addInputBindings(value: string[], framework: Framework = "none"): FormF
 			obj.counter = true;
 		}
 	}
+	if (isNumber) {
+		obj.type = "number";
+	}
 	if (isNumber && (step = value.find((rule) => /^multiple_of:\d+$/.test(rule)))) {
 		obj.step = +last(step.split(":"));
+	}
+	let minNum: string;
+	let maxNum: string;
+	if (isNumber && (minNum = value.find((rule) => /^min:\d+$/.test(rule)))) {
+		obj.min = +last(minNum.split(":"));
+	}
+	if (isNumber && (maxNum = value.find((rule) => /^max:\d+$/.test(rule)))) {
+		obj.max = +last(maxNum.split(":"));
 	}
 	if (isFile && (accept = value.find((rule) => /^mimetypes:/.test(rule)))) {
 		obj.accept = last(accept.split(":"));
