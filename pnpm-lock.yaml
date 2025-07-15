@@ -68,7 +68,7 @@ importers:
         version: rolldown-vite@7.0.9(esbuild@0.25.6)
       vitepress:
         specifier: ^1.6.3
-        version: 1.6.3(@algolia/client-search@5.33.0)(axios@1.10.0)(lightningcss@1.30.1)(nprogress@0.2.0)(postcss@8.5.6)(react@19.1.0)(search-insights@2.17.3)(typescript@5.8.3)
+        version: 1.6.3(@algolia/client-search@5.33.0)(axios@1.10.0)(lightningcss@1.30.1)(nprogress@0.2.0)(postcss@8.5.6)(search-insights@2.17.3)(typescript@5.8.3)
       vue-eslint-parser:
         specifier: ^10.2.0
         version: 10.2.0(eslint@9.31.0)
@@ -2184,9 +2184,9 @@ snapshots:
 
   '@docsearch/css@3.8.2': {}
 
-  '@docsearch/js@3.8.2(@algolia/client-search@5.33.0)(react@19.1.0)(search-insights@2.17.3)':
+  '@docsearch/js@3.8.2(@algolia/client-search@5.33.0)(search-insights@2.17.3)':
     dependencies:
-      '@docsearch/react': 3.8.2(@algolia/client-search@5.33.0)(react@19.1.0)(search-insights@2.17.3)
+      '@docsearch/react': 3.8.2(@algolia/client-search@5.33.0)(search-insights@2.17.3)
       preact: 10.26.9
     transitivePeerDependencies:
       - '@algolia/client-search'
@@ -2195,14 +2195,13 @@ snapshots:
       - react-dom
       - search-insights
 
-  '@docsearch/react@3.8.2(@algolia/client-search@5.33.0)(react@19.1.0)(search-insights@2.17.3)':
+  '@docsearch/react@3.8.2(@algolia/client-search@5.33.0)(search-insights@2.17.3)':
     dependencies:
       '@algolia/autocomplete-core': 1.17.7(@algolia/client-search@5.33.0)(algoliasearch@5.33.0)(search-insights@2.17.3)
       '@algolia/autocomplete-preset-algolia': 1.17.7(@algolia/client-search@5.33.0)(algoliasearch@5.33.0)
       '@docsearch/css': 3.8.2
       algoliasearch: 5.33.0
     optionalDependencies:
-      react: 19.1.0
       search-insights: 2.17.3
     transitivePeerDependencies:
       - '@algolia/client-search'
@@ -3856,10 +3855,10 @@ snapshots:
       fsevents: 2.3.3
       lightningcss: 1.30.1
 
-  vitepress@1.6.3(@algolia/client-search@5.33.0)(axios@1.10.0)(lightningcss@1.30.1)(nprogress@0.2.0)(postcss@8.5.6)(react@19.1.0)(search-insights@2.17.3)(typescript@5.8.3):
+  vitepress@1.6.3(@algolia/client-search@5.33.0)(axios@1.10.0)(lightningcss@1.30.1)(nprogress@0.2.0)(postcss@8.5.6)(search-insights@2.17.3)(typescript@5.8.3):
     dependencies:
       '@docsearch/css': 3.8.2
-      '@docsearch/js': 3.8.2(@algolia/client-search@5.33.0)(react@19.1.0)(search-insights@2.17.3)
+      '@docsearch/js': 3.8.2(@algolia/client-search@5.33.0)(search-insights@2.17.3)
       '@iconify-json/simple-icons': 1.2.43
       '@shikijs/core': 2.5.0
       '@shikijs/transformers': 2.5.0
