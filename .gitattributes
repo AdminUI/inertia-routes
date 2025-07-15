@@ -2,3 +2,4 @@
 /resources 		export-ignore
 /.github 		export-ignore
 /node_modules 	export-ignore
+/docs			export-ignore
