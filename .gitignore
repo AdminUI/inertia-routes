@@ -5,3 +5,5 @@ vendor
 node_modules
 stats.html
 dist
+docs/.vitepress/dist
+docs/.vitepress/cache
