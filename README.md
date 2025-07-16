@@ -21,7 +21,7 @@ Requires:
 
 This package is designed to complement Laravel/Inertia/Vue3 applications that want to use named routes within their Javascript, only without the overhead of loading the routes with every single API request.
 
-For installation and usage instructions, please visit the [Inertia Routes document website](https://adminui.github.io/inertia-routes/)
+For installation and usage instructions, please visit the [Inertia Routes documentation website](https://adminui.github.io/inertia-routes/)
 
 > AdminUI is a product of [evoMark](https://evomark.co.uk)
 
