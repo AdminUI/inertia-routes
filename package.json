@@ -5,6 +5,7 @@
 	"description": "A hybrid JS/PHP package adding Ziggy-routes functionality to your Laravel/Inertia application",
 	"main": "./dist/vue/index.cjs",
 	"module": "./dist/vue/index.mjs",
+	"types": "./dist/vue/types/index.d.ts",
 	"exports": {
 		".": {
 			"types": "./dist/vue/types/index.d.ts",
