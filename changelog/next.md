@@ -1,1 +1,0 @@
-- **BugFix**: Put types definition in top-level of package.json too
