@@ -1,3 +1,0 @@
-- **Improvement**: Add `resetOnSuccess` option for extendedForm in Vue3
-- **Improvement**: Add `visitOptions` option for extendedForm in Vue3
-- **BugFix**: Prevent SubmitEvents from being passed through as visit options if used bare on `@submit`
