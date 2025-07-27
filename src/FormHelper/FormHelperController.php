@@ -5,6 +5,8 @@ namespace AdminUI\InertiaRoutes\FormHelper;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -60,7 +62,21 @@ class FormHelperController
 		$filtered = collect($normalisedRules)->map(function ($ruleset) {
 			return collect($ruleset)->filter(fn($rule) => is_string($rule) === true)->values();
 		});
-		return response()->json($filtered);
+		return response()->json($this->checkForSpecialFields($filtered));
+	}
+
+	private function checkForSpecialFields(Collection $fields): Collection
+	{
+		$newFields = collect();
+		$fields->each(function ($rules, $field) use ($newFields) {
+			$confirmed = $rules->firstWhere(fn($rule) => Str::startsWith($rule, "confirm"));
+			if (!empty($confirmed)) {
+				$confirmedField = Str::contains($confirmed, ":") ? Str::afterLast($confirmed, ":") : $field . "_confirmation";
+				$newFields->put($confirmedField, ['required', 'string']);
+			}
+		});
+
+		return $fields->merge($newFields);
 	}
 
 	/**

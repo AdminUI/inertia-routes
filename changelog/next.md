@@ -1,0 +1,2 @@
+- **Improvement**: Create field for hydration when ruleset contains a `confirmed` rule.
+- **Chore**: Updated dependencies
