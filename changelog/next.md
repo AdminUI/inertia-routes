@@ -1,0 +1,1 @@
+- **Improvement**: Reuse rules from original field when generating `confirmation` field.
