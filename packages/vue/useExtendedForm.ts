@@ -3,7 +3,7 @@ import { useForm, type InertiaForm } from "@inertiajs/vue3";
 import { computed, type ComputedRef, ref, toValue, watch } from "vue";
 import axios from "axios";
 import { useResolvedRoute, type RouteProp } from "./useResolvedRoute";
-import { intersection, last, startCase, memoize } from "es-toolkit";
+import { intersection, last, startCase, memoize, noop, clone } from "es-toolkit";
 
 type Framework = "vuetify" | "none";
 
@@ -98,16 +98,25 @@ function addInputBindings(value: string[], framework: Framework = "none"): FormF
 interface ExtendedFormOptions<TForm> {
 	rememberKey?: string;
 	data?: TForm | (() => TForm);
+	visitOptions?: Omit<VisitOptions, "method" | "data">;
 	framework?: Framework;
 	autoHydrate?: boolean;
 	model?: boolean;
+	resetOnSuccess?: boolean;
 }
 
 export function useExtendedForm<TForm extends FormDataType>(
 	routeName: RouteProp,
 	options: ExtendedFormOptions<TForm> = {},
 ): ExtendedForm<TForm> {
-	const { rememberKey, data = {}, framework = "none", autoHydrate = true, model = true } = options;
+	const {
+		rememberKey,
+		data = {},
+		framework = "none",
+		autoHydrate = true,
+		model = true,
+		visitOptions: userVisitOptions = {},
+	} = options;
 	const resolvedRoute = useResolvedRoute(routeName);
 
 	const _form = rememberKey
@@ -125,6 +134,7 @@ export function useExtendedForm<TForm extends FormDataType>(
 	const extendedForm = _form as ExtendedForm<TForm>;
 
 	const _formMeta = ref<Record<string, string[]>>({});
+	const _initialFormData = ref(null);
 
 	const getFormDefaults = () => {
 		return Object.keys(_formMeta.value).reduce((acc, curr) => {
@@ -142,6 +152,7 @@ export function useExtendedForm<TForm extends FormDataType>(
 				defaultValue = false;
 			}
 			acc[curr] = Object.hasOwn(_form, curr) ? _form[curr] : defaultValue;
+			_initialFormData.value = clone(acc);
 			return acc;
 		}, {});
 	};
@@ -160,12 +171,27 @@ export function useExtendedForm<TForm extends FormDataType>(
 			});
 	}
 
+	/**
+	 * Prevent event objects from being used as visit options if users pass a bare callback to `@submit`
+	 */
+	const filterEvents = (maybeEvent: VisitOptions | SubmitEvent): VisitOptions => {
+		return maybeEvent instanceof SubmitEvent || !maybeEvent ? {} : maybeEvent;
+	};
+
 	const resolveRequestOptions = (maybeUrlOrOptions?: string | VisitOptions, maybeOptions?: VisitOptions) => {
 		const url = typeof maybeUrlOrOptions === "string" ? maybeUrlOrOptions : toValue(resolvedRoute);
-		const visitOptions = typeof maybeUrlOrOptions === "object" ? maybeUrlOrOptions : maybeOptions;
+		const visitOptions = typeof maybeUrlOrOptions === "object" ? filterEvents(maybeUrlOrOptions) : maybeOptions;
+		if (options.resetOnSuccess) {
+			const _originalCallback = visitOptions.onSuccess ? visitOptions.onSuccess.bind(_form) : noop;
+			visitOptions.onSuccess = () => {
+				_form.defaults(_initialFormData.value);
+				_form.reset();
+				_originalCallback();
+			};
+		}
 		return {
 			url,
-			visitOptions,
+			visitOptions: Object.assign(userVisitOptions, visitOptions ?? {}),
 		};
 	};
 

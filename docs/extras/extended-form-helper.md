@@ -39,15 +39,17 @@ This composable supercharges the standard Inertia form helper by connecting with
 
 The following props can be passed to `useExtendedForm`:
 
-| **Arg**               | **Type**    | **Default** | **Description**                                                               |
-| --------------------- | ----------- | ----------- | ----------------------------------------------------------------------------- |
-| `routeName`           | `RouteProp` | _required_  | Either a string route name, or a tuple with [routeName, routeParams (object)] |
-| `options`             | `object`    |             |                                                                               |
-| `options.rememberKey` | `string`    | None        | Inertia form key to store data/errors in history state                        |
-| `options.data`        | `object`    | None        | Any default data needed to pass to `useForm`                                  |
-| `options.framework`   | `Framework` | "none"      | Currently "none" or "vuetify", add extra bindings to Vuetify inputs           |
-| `options.autoHydrate` | `boolean`   | true        | Infer form fields and default values from your controller form request        |
-| `options.model`       | `boolean`   | true        | Include v-model in the automatic bindings for each input                      |
+| **Arg**                  | **Type**    | **Default** | **Description**                                                               |
+| ------------------------ | ----------- | ----------- | ----------------------------------------------------------------------------- |
+| `routeName`              | `RouteProp` | _required_  | Either a string route name, or a tuple with [routeName, routeParams (object)] |
+| `options`                | `object`    |             |                                                                               |
+| `options.rememberKey`    | `string`    | None        | Inertia form key to store data/errors in history state                        |
+| `options.data`           | `object`    | None        | Any default data needed to pass to `useForm`                                  |
+| `options.framework`      | `Framework` | "none"      | Currently "none" or "vuetify", add extra bindings to Vuetify inputs           |
+| `options.autoHydrate`    | `boolean`   | true        | Infer form fields and default values from your controller form request        |
+| `options.model`          | `boolean`   | true        | Include v-model in the automatic bindings for each input                      |
+| `options.resetOnSuccess` | `boolean`   | false       | Reset the form to default when it is successfully submitted                   |
+| `options.visitOptions`   | `object`    | {}          | Inertia visit options that are passed through to submission methods           |
 
 ## Advanced Example
 
