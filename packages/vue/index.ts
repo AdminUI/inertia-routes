@@ -3,3 +3,4 @@ export { useRoute } from "./useRoute";
 export { useResolvedRoute } from "./useResolvedRoute";
 export { useExtendedForm } from "./useExtendedForm";
 export { default as vuetifyRoutesPlugin } from "./vuetifyPlugin";
+export * from "./types";

@@ -21,14 +21,3 @@ export interface ZiggyConfig {
 		search?: string;
 	};
 }
-
-declare module "vue" {
-	interface ComponentCustomProperties {
-		$route: (
-			name: string,
-			params?: ZiggyParameterValue | undefined,
-			absolute?: boolean,
-			config?: ZiggyConfig,
-		) => string;
-	}
-}

@@ -14,7 +14,7 @@ type ExtendedForm<TForm extends FormDataType> = Omit<
 	InertiaForm<TForm>,
 	"submit" | "get" | "post" | "patch" | "put" | "delete"
 > & {
-	bind: Record<keyof TForm, ComputedRef<FormFieldBinding>>;
+	bind: Record<string, ComputedRef<FormFieldBinding>>;
 	get: (maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => void;
 	post: (maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => void;
 	patch: (maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => void;
@@ -244,12 +244,11 @@ export function useExtendedForm<TForm extends FormDataType>(
 		});
 	}
 
-	extendedForm.bind = {} as Record<keyof TForm, ComputedRef<FormFieldBinding>>;
+	extendedForm.bind = {} as Record<string, ComputedRef<FormFieldBinding>>;
 	watch(_formMeta, (meta) => {
 		for (const field in meta) {
 			if (Object.prototype.hasOwnProperty.call(meta, field)) {
-				const typedField = field as keyof TForm;
-				extendedForm.bind[typedField] = fieldBindFactory(typedField);
+				extendedForm.bind[field] = fieldBindFactory(field);
 			}
 		}
 	});
