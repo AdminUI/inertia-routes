@@ -1,4 +1,4 @@
-import { type FormDataConvertible, type VisitOptions, type Method } from "@inertiajs/core";
+import { type VisitOptions, type Method, type FormDataType } from "@inertiajs/core";
 import { useForm, type InertiaForm } from "@inertiajs/vue3";
 import { computed, type ComputedRef, ref, toValue, watch } from "vue";
 import axios from "axios";
@@ -7,10 +7,9 @@ import { intersection, last, startCase, memoize, noop, clone } from "es-toolkit"
 
 type Framework = "vuetify" | "none";
 
-type FormDataType = Record<string, FormDataConvertible>;
 type FormOptions = Omit<VisitOptions, "data">;
 
-type ExtendedForm<TForm extends FormDataType> = Omit<
+type ExtendedForm<TForm extends FormDataType<TForm>> = Omit<
 	InertiaForm<TForm>,
 	"submit" | "get" | "post" | "patch" | "put" | "delete"
 > & {
@@ -33,6 +32,7 @@ interface FormFieldBinding {
 	min?: number;
 	max?: number;
 	counter?: boolean;
+	items?: { title: string; value: unknown }[];
 	step?: number;
 	accept?: string;
 	"error-messages"?: Record<string, string[]>;
@@ -63,6 +63,7 @@ function addInputBindings(value: string[], framework: Framework = "none"): FormF
 	let max: string;
 	let step: string;
 	let accept: string;
+	let options: string;
 	if (isString && (min = value.find((rule) => /^min:\d+$/.test(rule)))) {
 		obj.minlength = +last(min.split(":"));
 		if (framework === "vuetify") {
@@ -92,6 +93,14 @@ function addInputBindings(value: string[], framework: Framework = "none"): FormF
 	if (isFile && (accept = value.find((rule) => /^mimetypes:/.test(rule)))) {
 		obj.accept = last(accept.split(":"));
 	}
+	if (framework === "vuetify" && (options = value.find((rule) => /^in:/.test(rule)))) {
+		const [_, values] = options.split(":");
+		const selectValues = values.split(",");
+		obj.items = selectValues.map((v) => ({
+			value: v,
+			title: startCase(v),
+		}));
+	}
 	return obj;
 }
 
@@ -105,7 +114,7 @@ interface ExtendedFormOptions<TForm> {
 	resetOnSuccess?: boolean;
 }
 
-export function useExtendedForm<TForm extends FormDataType>(
+export function useExtendedForm<TForm extends FormDataType<TForm>>(
 	routeName: RouteProp,
 	options: ExtendedFormOptions<TForm> = {},
 ): ExtendedForm<TForm> {
@@ -131,7 +140,9 @@ export function useExtendedForm<TForm extends FormDataType>(
 		put: _form.put.bind(_form),
 		delete: _form.delete.bind(_form),
 	};
-	const extendedForm = _form as ExtendedForm<TForm>;
+	const extendedForm = Object.assign(_form, {
+		bind: {} as Record<string, ComputedRef<FormFieldBinding>>,
+	}) as ExtendedForm<TForm>;
 
 	const _formMeta = ref<Record<string, string[]>>({});
 	const _initialFormData = ref(null);
@@ -140,15 +151,16 @@ export function useExtendedForm<TForm extends FormDataType>(
 		return Object.keys(_formMeta.value).reduce((acc, curr) => {
 			const rules = _formMeta.value[curr];
 			let defaultValue: unknown;
+			// NOTE: Make sure to do condition on the 'length' property, not the array itself
 			if (!rules || !Array.isArray(rules)) {
 				defaultValue = null;
 			} else if (intersection(rules, STRING_RULES).length) {
 				defaultValue = "";
-			} else if (intersection(rules, ["array"])) {
+			} else if (intersection(rules, ["array"]).length) {
 				defaultValue = [];
-			} else if (intersection(rules, NUMBER_RULES)) {
+			} else if (intersection(rules, NUMBER_RULES).length) {
 				defaultValue = 0;
-			} else if (intersection(rules, BOOLEAN_RULES)) {
+			} else if (intersection(rules, BOOLEAN_RULES).length) {
 				defaultValue = false;
 			}
 			acc[curr] = Object.hasOwn(_form, curr) ? _form[curr] : defaultValue;
@@ -237,7 +249,6 @@ export function useExtendedForm<TForm extends FormDataType>(
 
 			if (model) {
 				bind.modelValue = _form[field];
-				/** @ts-expect-error */
 				bind["onUpdate:modelValue"] = ($event) => (_form[field] = $event);
 			}
 			return bind;

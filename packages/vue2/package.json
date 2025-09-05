@@ -11,12 +11,12 @@
 	"author": "",
 	"license": "ISC",
 	"peerDependencies": {
-		"vue": "^2.7.0",
-		"@inertiajs/vue2": "^1.0.0"
+		"@inertiajs/vue2": "^1.0.0",
+		"vue": "^2.7.0"
 	},
 	"devDependencies": {
 		"@inertiajs/core": "^1.3.0",
 		"@inertiajs/vue2": "^1.3.0",
-		"vue": "^2.7.0"
+		"vue": "^2.7.16"
 	}
 }

@@ -2,12 +2,14 @@
 
 namespace AdminUI\InertiaRoutes\FormHelper;
 
+use ReflectionClass;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
@@ -60,9 +62,46 @@ class FormHelperController
 		}
 
 		$filtered = collect($normalisedRules)->map(function ($ruleset) {
-			return collect($ruleset)->filter(fn($rule) => is_string($rule) === true)->values();
+			return collect($ruleset)->map(fn($rule) => $this->replaceEnums($rule))->filter(fn($rule) => is_string($rule) === true)->values();
 		});
 		return response()->json($this->checkForSpecialFields($filtered));
+	}
+
+	private function replaceEnums($rule): mixed
+	{
+		if ($rule instanceof Enum) {
+			$ref = new ReflectionClass($rule);
+			$props = ['type', 'only', 'except'];
+			$data = [];
+			foreach ($props as $key) {
+				$prop = $ref->getProperty($key);
+				$prop->setAccessible(true);
+				$data[$key] = $prop->getValue($rule);
+			}
+			// If it's not a backed enum, abort
+			if (empty($data['type']) || is_subclass_of($data['type'], \BackedEnum::class) === false) {
+				return $rule;
+			}
+
+			if (!empty($data['only'])) {
+				$data['only'] = array_column($data['only'], 'value');
+			}
+			if (!empty($data['except'])) {
+				$data['except'] = array_column($data['except'], 'value');
+			}
+
+			$cases = $data['type']::cases();
+			$values = array_column($cases, 'value');
+			if (!empty($data['only'])) {
+				$options = $data['only'];
+			} else if (!empty($data['except'])) {
+				$options = Arr::reject($values, fn($value) => in_array($value, $data['except']));
+			} else {
+				$options = $values;
+			}
+
+			return "in:" . implode(",", $options);
+		} else return $rule;
 	}
 
 	private function checkForSpecialFields(Collection $fields): Collection
