@@ -111,7 +111,7 @@ class FormHelperController
 			$confirmed = $rules->firstWhere(fn($rule) => Str::startsWith($rule, "confirm"));
 			if (!empty($confirmed)) {
 				$confirmedField = Str::contains($confirmed, ":") ? Str::afterLast($confirmed, ":") : $field . "_confirmation";
-				$newFields->put($confirmedField, $rules->filter(fn($rule) => Str::doesntStartWith($rule, "confirm")));
+				$newFields->put($confirmedField, $rules->filter(fn($rule) => Str::doesntStartWith($rule, "confirm"))->values());
 			}
 		});
 
