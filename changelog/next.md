@@ -1,2 +1,0 @@
-- **Feature**: Added `useExtendedForm` Vuetify support for extracting `items` from **in** and **Enum** (backed) rules
-- **BugFix**: Issue resolving correct default values for `useExtendedForm`
