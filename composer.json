@@ -12,7 +12,10 @@
 	"require": {
 		"php": "^8.0.2",
 		"inertiajs/inertia-laravel": "^0.6.0|^1.0|^2.0",
-		"laravel/framework": "^9.0|^10.0|^11.0|^12.0",
+		"illuminate/support": "^9.0|^10.0|^11.0|^12.0",
+   		"illuminate/contracts": "^9.0|^10.0|^11.0|^12.0",
+    	"illuminate/http": "^9.0|^10.0|^11.0|^12.0",
+    	"illuminate/validation": "^9.0|^10.0|^11.0|^12.0",
 		"tightenco/ziggy": "^2.0",
 		"pixelfear/composer-dist-plugin": "^0.1.6"
 	},

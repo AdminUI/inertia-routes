@@ -7,11 +7,9 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
 class FormHelperController
@@ -139,7 +137,7 @@ class FormHelperController
 			if ($param->getName() === "request") return true;
 			$class = $param->getType();
 			if (Str::endsWith($class, 'Request')) return true;
-			else if (is_subclass_of($class, FormRequest::class, true)) return true;
+			else if (is_subclass_of($class, 'Illuminate\Foundation\Http\FormRequest', true)) return true;
 			else return false;
 		});
 		return !empty($requestClass) ? $requestClass->getType()->getName() : null;

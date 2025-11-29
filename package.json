@@ -47,13 +47,13 @@
 	},
 	"license": "MIT",
 	"dependencies": {
-		"@vueuse/core": "^13.9.0",
-		"es-toolkit": "^1.39.10",
+		"es-toolkit": "^1.42.0",
 		"qs": "^6.14.0"
 	},
 	"peerDependencies": {
 		"@inertiajs/vue2": "^1.0.0",
 		"@inertiajs/vue3": "^2.0.0",
+		"@vueuse/core": "^11.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0",
 		"react": ">=16.0.0",
 		"svelte": ">=3.0.0",
 		"vue": ">=3.0.0 || ^2.7.0"
@@ -61,6 +61,9 @@
 	"peerDependenciesMeta": {
 		"vue": {
 			"optional": true
+		},
+		"@vueuse/core": { 
+			"optional": true 
 		},
 		"react": {
 			"optional": true
@@ -76,18 +79,18 @@
 		}
 	},
 	"devDependencies": {
-		"@eslint/js": "^9.35.0",
-		"esbuild": "^0.25.9",
-		"esbuild-node-externals": "^1.18.0",
-		"eslint": "^9.35.0",
+		"@eslint/js": "^9.39.1",
+		"esbuild": "^0.27.0",
+		"esbuild-node-externals": "^1.20.1",
+		"eslint": "^9.39.1",
 		"eslint-config-prettier": "^10.1.8",
-		"eslint-plugin-vue": "^10.4.0",
+		"eslint-plugin-vue": "^10.6.2",
 		"gh-pages": "^6.3.0",
-		"globals": "^16.3.0",
-		"prettier": "^3.6.2",
+		"globals": "^16.5.0",
+		"prettier": "^3.7.2",
 		"tsc-alias": "^1.8.16",
-		"typescript": "^5.9.2",
-		"vite": "npm:rolldown-vite@^7.1.5",
+		"typescript": "^5.9.3",
+		"vite": "npm:rolldown-vite@^7.2.8",
 		"vitepress": "^1.6.4",
 		"vue-eslint-parser": "^10.2.0"
 	}
