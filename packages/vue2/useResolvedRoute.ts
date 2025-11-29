@@ -1,6 +1,14 @@
-import { computed } from "vue";
-import { toValue } from "@vueuse/core";
+import { computed, unref } from "vue";
 import { useRoute } from "./useRoute";
+
+/**
+ *
+ * @param { import("vue").MaybeRefOrGetter } maybeRef
+ * @returns { unknown }
+ */
+function toValue(maybeRef) {
+	return typeof maybeRef === "function" ? maybeRef() : unref(maybeRef);
+}
 
 /**
  * Takes either a route string, or a tuple of string/params object and resolves a URL
