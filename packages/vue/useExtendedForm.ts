@@ -112,6 +112,7 @@ interface ExtendedFormOptions<TForm> {
 	autoHydrate?: boolean;
 	model?: boolean;
 	resetOnSuccess?: boolean;
+	transform?: (data: TForm) => TForm
 }
 
 export function useExtendedForm<TForm extends FormDataType<TForm>>(
@@ -125,6 +126,7 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 		autoHydrate = true,
 		model = true,
 		visitOptions: userVisitOptions = {},
+		transform = null
 	} = options;
 	const resolvedRoute = useResolvedRoute(routeName);
 
@@ -139,6 +141,7 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 		patch: _form.patch.bind(_form),
 		put: _form.put.bind(_form),
 		delete: _form.delete.bind(_form),
+		transform: _form.transform.bind(_form),
 	};
 	const extendedForm = Object.assign(_form, {
 		bind: {} as Record<string, ComputedRef<FormFieldBinding>>,
@@ -209,6 +212,9 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 
 	extendedForm.submit = (method: Method, maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => {
 		const { url, visitOptions } = resolveRequestOptions(maybeUrlOrOptions, maybeOptions);
+		if (transform && typeof transform === "function") {
+			original.transform(transform);
+		}
 		original.submit(method, url, visitOptions);
 	};
 
