@@ -183,6 +183,10 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 					_form.defaults(getFormDefaults());
 					_form.reset();
 				}
+			})
+			.catch((err) => {
+				const message = err.response?.data?.error ?? "Unable to get extended form data";
+				console.error(message);
 			});
 	}
 

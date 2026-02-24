@@ -10,60 +10,55 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
+use AdminUI\InertiaRoutes\Exceptions\InvalidRouteException;
+use AdminUI\InertiaRoutes\Exceptions\MissingRouteException;
+use AdminUI\InertiaRoutes\Exceptions\NoRulesFoundException;
+use AdminUI\InertiaRoutes\Exceptions\MissingFormRequestException;
 
 class FormHelperController
 {
-	public function __invoke(Request $request)
-	{
-		$validated = $request->validate([
-			'routeName' => ['nullable']
-		]);
+	  public function __invoke(Request $request)
+    {
+        $validated = $request->validate([
+            'routeName' => ['nullable'],
+        ]);
 
-		if (empty($validated['routeName'])) {
-			return ValidationException::withMessages([
-				'routeName' => ['No route given. Ensure it is passed as the first argument of "useExtendedForm"']
-			]);
-		} else if ($this->isValid($validated['routeName']) === false) {
-			return ValidationException::withMessages([
-				'routeName' => ['Invalid route given']
-			]);
-		}
+        if (empty($validated['routeName'])) {
+            return response()->json(['error' => (new MissingRouteException)->getMessage()], 422);
 
-		if (is_array($validated['routeName'])) {
-			$routeName = Arr::first($validated['routeName']);
-		} else {
-			$routeName = $validated['routeName'];
-		}
+        } elseif ($this->isValid($validated['routeName']) === false) {
+            return response()->json(['error' => (new InvalidRouteException)->getMessage()], 422);
+        }
 
-		$route = Route::getRoutes()->getByName($routeName);
-		if (empty($route) || !method_exists($route, 'signatureParameters')) {
-			return ValidationException::withMessages([
-				'routeName' => ['Couldn\'t find a valid route with this name']
-			]);
-		}
+        if (is_array($validated['routeName'])) {
+            $routeName = Arr::first($validated['routeName']);
+        } else {
+            $routeName = $validated['routeName'];
+        }
 
-		$params = $route->signatureParameters();
-		$requestClass = $this->getRequestClassFromParams($params);
-		if (empty($requestClass)) {
-			return ValidationException::withMessages([
-				'routeName' => ['No form request found in controller action arguments']
-			]);
-		}
+        $route = Route::getRoutes()->getByName($routeName);
+        if (empty($route) || ! method_exists($route, 'signatureParameters')) {
+            return response()->json(['error' => (new InvalidRouteException)->getMessage()], 422);
+        }
 
-		$normalisedRules = $this->getNormalisedRulesFromRequestClass($requestClass);
+        $params = $route->signatureParameters();
+        $requestClass = $this->getRequestClassFromParams($params);
+        if (empty($requestClass)) {
+            return response()->json(['error' => (new MissingFormRequestException)->getMessage()], 422);
+        }
 
-		if (empty($normalisedRules)) {
-			return ValidationException::withMessages([
-				'routeName' => ['Couldn\'t resolve any rules from this route']
-			]);
-		}
+        $normalisedRules = $this->getNormalisedRulesFromRequestClass($requestClass);
 
-		$filtered = collect($normalisedRules)->map(function ($ruleset) {
-			return collect($ruleset)->map(fn($rule) => $this->replaceEnums($rule))->filter(fn($rule) => is_string($rule) === true)->values();
-		});
-		return response()->json($this->checkForSpecialFields($filtered));
-	}
+        if (empty($normalisedRules)) {
+            return response()->json(['error' => (new NoRulesFoundException)->getMessage()], 404);
+        }
+
+        $filtered = collect($normalisedRules)->map(function ($ruleset) {
+            return collect($ruleset)->map(fn ($rule) => $this->replaceEnums($rule))->filter(fn ($rule) => is_string($rule) === true)->values();
+        });
+
+        return response()->json($this->checkForSpecialFields($filtered));
+    }
 
 	private function replaceEnums($rule): mixed
 	{
