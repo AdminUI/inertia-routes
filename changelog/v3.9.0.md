@@ -1,0 +1,1 @@
+- **Feature**: Added `createInertiaPageResolver` helper function for Vue 3 package
