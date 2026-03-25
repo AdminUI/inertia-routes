@@ -29,7 +29,7 @@ const pageNotFound = (name: string, errorClass: string, errorTextClass: string) 
 	);
 };
 
-const resolveTemplate = (pages, name, suffix = ".vue") => {
+const resolveTemplate = (pages, name: string, suffix: string) => {
 	const chain = [
 		(curr) => map(curr, (path) => path.split("/")),
 		(curr) => unzip(curr),
@@ -71,7 +71,7 @@ export function createInertiaPageResolver(pagesGlob: PagesGlob, config: Partial<
 	const resolvedConfig = resolveConfig(config);
 
 	return async (name: string): Promise<PageModule | Component> => {
-		const resolved = pagesGlob[resolveTemplate(pagesGlob, name)];
+		const resolved = pagesGlob[resolveTemplate(pagesGlob, name, resolvedConfig.fileSuffix)];
 		const page = typeof resolved === "function" ? await resolved() : resolved;
 
 		if (!page) {
@@ -91,8 +91,6 @@ export function createInertiaPageResolver(pagesGlob: PagesGlob, config: Partial<
 			// Push the default layout to the end of the layouts array
 			resolvedConfig.layouts.push({ condition: true, layout: resolvedConfig.default });
 		}
-
-		console.log(resolvedConfig);
 
 		for (const configLayout of resolvedConfig.layouts) {
 			const { condition, layout } = configLayout;

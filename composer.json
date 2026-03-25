@@ -45,6 +45,9 @@
 		"allow-plugins": {
 			"pestphp/pest-plugin": true,
 			"pixelfear/composer-dist-plugin": true
+		},
+		"platform": {
+			"php": "8.2.30"
 		}
 	},
 	"scripts": {
