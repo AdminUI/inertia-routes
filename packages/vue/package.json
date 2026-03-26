@@ -11,13 +11,14 @@
 	"author": "",
 	"license": "ISC",
 	"peerDependencies": {
-		"@inertiajs/vue3": "^2.0.0",
+		"@inertiajs/vue3": "^2.0.0 || ^3.0.0",
 		"axios": "^1.0.0",
 		"vue": "^3.5.0"
 	},
 	"devDependencies": {
-		"@inertiajs/core": "^2.1.5",
-		"@inertiajs/vue3": "^2.1.5",
-		"vue": "^3.5.21"
+		"@inertiajs/core": "^3.0.0",
+		"@inertiajs/vue3": "^3.0.0",
+		"typescript": "^5.9.3",
+		"vue": "^3.5.31"
 	}
 }

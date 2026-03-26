@@ -7,7 +7,7 @@
 		"declaration": true,
 		"declarationDir": "../../dist/vue/types",
 		"module": "ES2020",
-		"moduleResolution": "Node",
+		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"allowSyntheticDefaultImports": true,
 		"removeComments": true,

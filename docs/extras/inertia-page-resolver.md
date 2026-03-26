@@ -13,13 +13,8 @@ createInertiaApp({
     },
   ),
   title: (title) => (title ? `${title} - Ping CRM` : "Ping CRM"),
-  setup({ el, App, props, plugin }) {
-    const inertiaRoutesPlugin = useInertiaRoutes(props);
-
-    createApp({ render: () => h(App, props) })
-      .use(plugin)
-      .use(inertiaRoutesPlugin)
-      .mount(el);
+  withApp(app) {
+    app.use(inertiaRoutes);
   },
 });
 ```
@@ -51,6 +46,34 @@ The first argument to `createInertiaPageResolver` must be a glob of pages (usual
 ### Layouts
 
 The `layouts` array, passed to the helper as part of the config (see above) allows you to conditionally change the default layout based on the page loaded.
+
+::: tip
+
+Unlike the `layout` callback that can be passed to `createInertiaApp` (v3+), this method allows you to wrap a Layout around all layouts (via the `wrapper` prop), even if your page has defined a layout in its options.
+
+For example:
+
+```js
+// SomePage.vue
+<script setup>
+defineOptions({
+  layout: SomeOtherLayout,
+});
+</script>
+
+// app.js
+createInertiaApp({
+  layout: (name, props) => {
+    // This callback is never called for SomePage.vue
+    return DefaultLayout
+  },
+  withApp(app) {
+    app.use(inertiaRoutes);
+  },
+});
+```
+
+:::
 
 Each item in the array must be an object with a `condition` property and a `layout` property.
 

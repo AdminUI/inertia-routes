@@ -1,4 +1,4 @@
-export { default as useInertiaRoutes } from "./plugin";
+export { default as useInertiaRoutes, inertiaRoutes } from "./plugin";
 export { useRoute } from "./useRoute";
 export { useResolvedRoute } from "./useResolvedRoute";
 export { useExtendedForm } from "./useExtendedForm";

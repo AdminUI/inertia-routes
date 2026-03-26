@@ -119,6 +119,7 @@ export function createInertiaPageResolver(pagesGlob: PagesGlob, config: Partial<
 			if (Array.isArray(page.default.layout)) {
 				const hasWrapper = page.default.layout.some((l) => l.__is_wrapper === true);
 				if (hasWrapper === false && resolvedConfig.wrapper) {
+					/** @ts-expect-error */
 					page.default.layout.unshift(resolvedConfig.wrapper);
 				}
 			}

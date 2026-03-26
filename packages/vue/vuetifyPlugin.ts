@@ -6,6 +6,10 @@ import { RouteProp, useResolvedRoute } from "./useResolvedRoute";
 import { lowerCase, omit, pick } from "es-toolkit";
 import { castArray } from "es-toolkit/compat";
 
+interface VuetifyPluginOptions {
+	flagMismatches?: boolean;
+}
+
 type ToCamelCase<T extends string> = T extends `${infer First}-${infer Rest}` // Handles cases with underscores
 	? `${Lowercase<First>}${Capitalize<ToCamelCase<Rest>>}`
 	: T extends `${infer First}${infer Rest}` // Handles normal uppercase cases
@@ -67,7 +71,7 @@ const resolveParameters = (attrs: Record<string, unknown>) => {
 	return parameters;
 };
 
-const useLink = (props: UseLinkProps) => {
+const useLink = (options: VuetifyPluginOptions) => (props: UseLinkProps) => {
 	const vm = getCurrentInstance();
 	const controller = new AbortController();
 
@@ -102,6 +106,10 @@ const useLink = (props: UseLinkProps) => {
 	});
 	onUnmounted(() => controller.abort());
 
+	if (vm.proxy?.$el && options.flagMismatches !== true) {
+		vm.proxy.$el.dataset.allowMismatch = "class";
+	}
+
 	return {
 		route: computed(() => ({ href: target.value })),
 		isExactActive: computed(() => currentLocation.value === target.value),
@@ -116,13 +124,13 @@ const useLink = (props: UseLinkProps) => {
 	};
 };
 
-const Plugin = {
+const Plugin = (options) => ({
 	name: "RouterLink",
-	useLink,
-};
+	useLink: useLink(options),
+});
 
 export default {
-	install: (app: App) => {
-		app.component("RouterLink", Plugin);
+	install: (app: App, options: VuetifyPluginOptions = {}) => {
+		app.component("RouterLink", Plugin(options));
 	},
 };

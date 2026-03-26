@@ -28,7 +28,7 @@ export default defineConfig({
 			{
 				text: "Extras",
 				items: [
-					{ text: "Vuetify 3 Plugin", link: "/extras/vuetify-3-plugin" },
+					{ text: "Vuetify Plugin", link: "/extras/vuetify-plugin" },
 					{ text: "Extended Form Helper", link: "/extras/extended-form-helper" },
 					{ text: "Inertia Page Resolver", link: "/extras/inertia-page-resolver" },
 				],

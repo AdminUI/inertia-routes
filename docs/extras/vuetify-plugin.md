@@ -1,4 +1,7 @@
-# Vuetify 3 Plugin
+# Vuetify Plugin
+
+> [!IMPORTANT]
+> Only compatible with Vuetify >= 3
 
 ## What it does
 
@@ -47,7 +50,7 @@ All router-enabled components in Vuetify also support any Link props from Inerti
 ```js
 import { createApp, h } from "vue";
 import { createInertiaApp } from "@inertiajs/vue3";
-import { useInertiaRoutes, vuetifyRoutesPlugin } from "@adminui/inertia-routes";
+import { inertiaRoutes, vuetifyRoutesPlugin } from "@adminui/inertia-routes";
 import { createVuetify } from "vuetify";
 
 const vuetify = createVuetify();
@@ -57,15 +60,24 @@ createInertiaApp({
     const pages = import.meta.glob("./Pages/**/*.vue", { eager: true });
     return pages[`./Pages/${name}.vue`];
   },
-  setup({ el, App, props, plugin }) {
-    const inertiaRoutesPlugin = useInertiaRoutes(props);
-
-    createApp({ render: () => h(App, props) })
-      .use(plugin)
-      .use(vuetify)
-      .use(inertiaRoutesPlugin)
-      .use(vuetifyRoutesPlugin)
-      .mount(el);
-  },
+  withApp((app) {
+    app.use(vuetify)
+      .use(inertiaRoutes)
+      .use(vuetifyRoutesPlugin);
+  }),
 });
+```
+
+## Config
+
+By default, the plugin suppresses hydration mismatch errors on the `class` attribute, you can disable the functionality by passing a config object to `app.use`:
+
+```js
+createInertiaApp({
+  withApp((app) {
+    app.use(vuetify)
+      .use(inertiaRoutes)
+      .use(vuetifyRoutesPlugin, { flagMismatches: true });
+  }),
+})
 ```

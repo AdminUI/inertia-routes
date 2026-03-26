@@ -1,5 +1,5 @@
 {
-	"include": ["index.ts","global.d.ts"],
+	"include": ["index.ts", "global.d.ts"],
 	"compilerOptions": {
 		"rootDir": ".",
 		"target": "ES6",
