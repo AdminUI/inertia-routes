@@ -1,2 +1,0 @@
-- **Improvement**: Dropped `axios` dependency for the `useExtendedForm` composable and switched to `fetch`
-- **BugFix**: Handle null `getType()` return on reflection class for form-request
