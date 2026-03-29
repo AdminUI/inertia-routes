@@ -52,7 +52,7 @@
 	},
 	"peerDependencies": {
 		"@inertiajs/vue2": "^1.0.0",
-		"@inertiajs/vue3": "^2.0.0",
+		"@inertiajs/vue3": "^2.0.0 || ^3.0.0",
 		"@vueuse/core": "^11.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0",
 		"react": ">=16.0.0",
 		"svelte": ">=3.0.0",
