@@ -17,48 +17,47 @@ use AdminUI\InertiaRoutes\Exceptions\MissingFormRequestException;
 
 class FormHelperController
 {
-	  public function __invoke(Request $request)
-    {
-        $validated = $request->validate([
-            'routeName' => ['nullable'],
-        ]);
+	public function __invoke(Request $request)
+	{
+		$validated = $request->validate([
+			'routeName' => ['nullable'],
+		]);
 
-        if (empty($validated['routeName'])) {
-            return response()->json(['error' => (new MissingRouteException)->getMessage()], 422);
+		if (empty($validated['routeName'])) {
+			return response()->json(['error' => (new MissingRouteException)->getMessage()], 422);
+		} elseif ($this->isValid($validated['routeName']) === false) {
+			return response()->json(['error' => (new InvalidRouteException)->getMessage()], 422);
+		}
 
-        } elseif ($this->isValid($validated['routeName']) === false) {
-            return response()->json(['error' => (new InvalidRouteException)->getMessage()], 422);
-        }
+		if (is_array($validated['routeName'])) {
+			$routeName = Arr::first($validated['routeName']);
+		} else {
+			$routeName = $validated['routeName'];
+		}
 
-        if (is_array($validated['routeName'])) {
-            $routeName = Arr::first($validated['routeName']);
-        } else {
-            $routeName = $validated['routeName'];
-        }
+		$route = Route::getRoutes()->getByName($routeName);
+		if (empty($route) || ! method_exists($route, 'signatureParameters')) {
+			return response()->json(['error' => (new InvalidRouteException)->getMessage()], 422);
+		}
 
-        $route = Route::getRoutes()->getByName($routeName);
-        if (empty($route) || ! method_exists($route, 'signatureParameters')) {
-            return response()->json(['error' => (new InvalidRouteException)->getMessage()], 422);
-        }
+		$params = $route->signatureParameters();
+		$requestClass = $this->getRequestClassFromParams($params);
+		if (empty($requestClass)) {
+			return response()->json(['error' => (new MissingFormRequestException)->getMessage()], 422);
+		}
 
-        $params = $route->signatureParameters();
-        $requestClass = $this->getRequestClassFromParams($params);
-        if (empty($requestClass)) {
-            return response()->json(['error' => (new MissingFormRequestException)->getMessage()], 422);
-        }
+		$normalisedRules = $this->getNormalisedRulesFromRequestClass($requestClass);
 
-        $normalisedRules = $this->getNormalisedRulesFromRequestClass($requestClass);
+		if (empty($normalisedRules)) {
+			return response()->json(['error' => (new NoRulesFoundException)->getMessage()], 404);
+		}
 
-        if (empty($normalisedRules)) {
-            return response()->json(['error' => (new NoRulesFoundException)->getMessage()], 404);
-        }
+		$filtered = collect($normalisedRules)->map(function ($ruleset) {
+			return collect($ruleset)->map(fn($rule) => $this->replaceEnums($rule))->filter(fn($rule) => is_string($rule) === true)->values();
+		});
 
-        $filtered = collect($normalisedRules)->map(function ($ruleset) {
-            return collect($ruleset)->map(fn ($rule) => $this->replaceEnums($rule))->filter(fn ($rule) => is_string($rule) === true)->values();
-        });
-
-        return response()->json($this->checkForSpecialFields($filtered));
-    }
+		return response()->json($this->checkForSpecialFields($filtered));
+	}
 
 	private function replaceEnums($rule): mixed
 	{
@@ -135,7 +134,7 @@ class FormHelperController
 			else if (is_subclass_of($class, 'Illuminate\Foundation\Http\FormRequest', true)) return true;
 			else return false;
 		});
-		return !empty($requestClass) ? $requestClass->getType()->getName() : null;
+		return !empty($requestClass) ? $requestClass->getType()?->getName() : null;
 	}
 
 	/**

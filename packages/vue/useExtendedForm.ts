@@ -1,7 +1,6 @@
 import { type VisitOptions, type Method, type FormDataType } from "@inertiajs/core";
 import { useForm, type InertiaForm } from "@inertiajs/vue3";
 import { computed, type ComputedRef, ref, toValue, watch } from "vue";
-import axios from "axios";
 import { useResolvedRoute, type RouteProp } from "./useResolvedRoute";
 import { intersection, last, startCase, memoize, noop, clone } from "es-toolkit";
 
@@ -112,7 +111,7 @@ interface ExtendedFormOptions<TForm> {
 	autoHydrate?: boolean;
 	model?: boolean;
 	resetOnSuccess?: boolean;
-	transform?: (data: TForm) => TForm
+	transform?: (data: TForm) => TForm;
 }
 
 export function useExtendedForm<TForm extends FormDataType<TForm>>(
@@ -126,7 +125,7 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 		autoHydrate = true,
 		model = true,
 		visitOptions: userVisitOptions = {},
-		transform = null
+		transform = null,
 	} = options;
 	const resolvedRoute = useResolvedRoute(routeName);
 
@@ -173,19 +172,28 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 	};
 
 	if (routeName) {
-		axios
-			.post("/inertia-routes/form-helper", {
-				routeName,
-			})
-			.then((response) => {
-				_formMeta.value = response.data;
+		fetch("/inertia-routes/form-helper", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "application/json",
+			},
+			body: JSON.stringify({ routeName }),
+		})
+			.then((res) => res.json())
+			.then((json) => {
+				if (json.error) {
+					throw new Error(json.error);
+				}
+				_formMeta.value = json;
 				if (autoHydrate) {
 					_form.defaults(getFormDefaults());
 					_form.reset();
 				}
 			})
 			.catch((err) => {
-				const message = err.response?.data?.error ?? "Unable to get extended form data";
+				const message =
+					err?.message && typeof err.message === "string" ? err.message : "Unable to get extended form data";
 				console.error(message);
 			});
 	}
