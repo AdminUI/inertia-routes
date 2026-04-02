@@ -44,5 +44,10 @@ class TestCase extends \Orchestra\Testbench\TestCase
 		$app['config']->set('inertia.testing.page_paths', [
 			__DIR__ . '/Mocks/Pages'
 		]);
+
+		// Inertia v3 compatibility
+		$app['config']->set('inertia.pages.paths', [
+			__DIR__ . '/Mocks/Pages'
+		]);
 	}
 }
