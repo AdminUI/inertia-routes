@@ -2,7 +2,6 @@
 
 namespace AdminUI\InertiaRoutes\FormHelper;
 
-use ReflectionClass;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -53,23 +52,48 @@ class FormHelperController
 		}
 
 		$filtered = collect($normalisedRules)->map(function ($ruleset) {
-			return collect($ruleset)->map(fn($rule) => $this->replaceEnums($rule))->filter(fn($rule) => is_string($rule) === true)->values();
+			return collect($ruleset)
+				->map(fn($rule) => $this->replaceEnums($rule))
+				->flatMap(fn($rule) => $this->constructRulesFromPasswordDefaults($rule))
+				->filter(fn($rule) => is_string($rule) === true)
+				->values();
 		});
 
 		return response()->json($this->checkForSpecialFields($filtered));
 	}
 
+	/**
+	 * Extract relevant rules for the Password::defaults() method
+	 */
+	private function constructRulesFromPasswordDefaults($rule): array
+	{
+		if ($rule instanceof \Illuminate\Validation\Rules\Password) {
+			$ruleArray = $rule->appliedRules();
+			$rules = [];
+
+			if (!empty($ruleArray['min'])) {
+				$rules[] = "min:" . $ruleArray['min'];
+			}
+			if (!empty($ruleArray['max'])) {
+				$rules[] = "max:" . $ruleArray['max'];
+			}
+
+			return $rules;
+		}
+
+		return [$rule];
+	}
+
 	private function replaceEnums($rule): mixed
 	{
 		if ($rule instanceof Enum) {
-			$ref = new ReflectionClass($rule);
+			$ref = invade($rule);
 			$props = ['type', 'only', 'except'];
 			$data = [];
 			foreach ($props as $key) {
-				$prop = $ref->getProperty($key);
-				$prop->setAccessible(true);
-				$data[$key] = $prop->getValue($rule);
+				$data[$key] = $ref->{$key};
 			}
+
 			// If it's not a backed enum, abort
 			if (empty($data['type']) || is_subclass_of($data['type'], \BackedEnum::class) === false) {
 				return $rule;
@@ -84,6 +108,7 @@ class FormHelperController
 
 			$cases = $data['type']::cases();
 			$values = array_column($cases, 'value');
+
 			if (!empty($data['only'])) {
 				$options = $data['only'];
 			} else if (!empty($data['except'])) {

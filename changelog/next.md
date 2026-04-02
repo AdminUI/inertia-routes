@@ -1,0 +1,3 @@
+- **Feature**: Some rules extracted from `Password::defaults()` on form helper
+- **Improvement**: Use `spatie/invade` to gain access to object internals, avoid deprecation of `setAccessible`
+- **BugFix**: Don't default field to `0` if both an `integer` and an `exists` rule are present on form helper

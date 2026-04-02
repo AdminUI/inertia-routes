@@ -12,14 +12,17 @@
 # AdminUI - Inertia Routes
 
 Currently supports:
+
 - Vue 3
 - Vue 2 (limited features)
 
 Requires:
+
 - Laravel
 - InertiaJS
+- qs-esm (^7.0.0)
 
-This package is designed to complement Laravel/Inertia/Vue3 applications that want to use named routes within their Javascript, only without the overhead of loading the routes with every single API request.
+This package is designed to complement Laravel/Inertia applications that want to use named routes within their Javascript, only without the overhead of loading the routes with every single API request.
 
 For installation and usage instructions, please visit the [Inertia Routes documentation website](https://adminui.github.io/inertia-routes/)
 

@@ -160,7 +160,10 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 				defaultValue = "";
 			} else if (intersection(rules, ["array"]).length) {
 				defaultValue = [];
-			} else if (intersection(rules, NUMBER_RULES).length) {
+			} else if (
+				intersection(rules, NUMBER_RULES).length &&
+				rules.every((rule) => rule.startsWith("exists") === false)
+			) {
 				defaultValue = 0;
 			} else if (intersection(rules, BOOLEAN_RULES).length) {
 				defaultValue = false;
