@@ -149,25 +149,40 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 	const _formMeta = ref<Record<string, string[]>>({});
 	const _initialFormData = ref(null);
 
+	const getFormArrayDefaults = (name) => {
+		const keys = Object.keys(_formMeta.value);
+		const regex = new RegExp(`${name}\.[a-z]+`, "i");
+		const found = keys.some((key) => regex.test(key));
+		return found ? {} : [];
+	};
+
+	const getDefault = (rules, curr) => {
+		let defaultValue: unknown;
+		// NOTE: Make sure to do condition on the 'length' property, not the array itself
+		if (!rules || !Array.isArray(rules)) {
+			defaultValue = null;
+		} else if (intersection(rules, STRING_RULES).length) {
+			defaultValue = "";
+		} else if (intersection(rules, ["array"]).length) {
+			defaultValue = getFormArrayDefaults(curr);
+		} else if (
+			intersection(rules, NUMBER_RULES).length &&
+			rules.every((rule) => rule.startsWith("exists") === false)
+		) {
+			defaultValue = 0;
+		} else if (intersection(rules, BOOLEAN_RULES).length) {
+			defaultValue = false;
+		}
+		return defaultValue;
+	};
+
 	const getFormDefaults = () => {
 		return Object.keys(_formMeta.value).reduce((acc, curr) => {
+			if (/\./.test(curr)) return acc;
+
 			const rules = _formMeta.value[curr];
-			let defaultValue: unknown;
-			// NOTE: Make sure to do condition on the 'length' property, not the array itself
-			if (!rules || !Array.isArray(rules)) {
-				defaultValue = null;
-			} else if (intersection(rules, STRING_RULES).length) {
-				defaultValue = "";
-			} else if (intersection(rules, ["array"]).length) {
-				defaultValue = [];
-			} else if (
-				intersection(rules, NUMBER_RULES).length &&
-				rules.every((rule) => rule.startsWith("exists") === false)
-			) {
-				defaultValue = 0;
-			} else if (intersection(rules, BOOLEAN_RULES).length) {
-				defaultValue = false;
-			}
+			let defaultValue = getDefault(rules, curr);
+
 			acc[curr] = Object.hasOwn(_form, curr) ? _form[curr] : defaultValue;
 			_initialFormData.value = clone(acc);
 			return acc;
@@ -279,6 +294,9 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 	extendedForm.bind = {} as Record<string, ComputedRef<FormFieldBinding>>;
 	watch(_formMeta, (meta) => {
 		for (const field in meta) {
+			if (/\./.test(field)) {
+				continue;
+			}
 			if (Object.prototype.hasOwnProperty.call(meta, field)) {
 				extendedForm.bind[field] = fieldBindFactory(field);
 			}

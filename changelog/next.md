@@ -1,0 +1,1 @@
+- **Improvement**: Handle objects properly in extended form
