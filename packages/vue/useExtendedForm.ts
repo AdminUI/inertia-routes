@@ -272,7 +272,7 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 			const metaValue = _formMeta.value[field];
 			if (Array.isArray(metaValue) === false) {
 				return {
-					loading: computed(() => toValue(updating).includes(field))
+					loading: toValue(updating).includes(field)
 				};
 			}
 			const bind = {
@@ -285,7 +285,7 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 
 			if (framework === "vuetify") {
 				bind.label = startCase(field);
-				bind.loading = computed(() => toValue(updating).includes(field));
+				bind.loading = toValue(updating).includes(field);
 				bind["error-messages"] = _form.errors[field];
 			}
 
