@@ -271,7 +271,9 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 		return computed(() => {
 			const metaValue = _formMeta.value[field];
 			if (Array.isArray(metaValue) === false) {
-				return {};
+				return {
+					loading: computed(() => toValue(updating).includes(field))
+				};
 			}
 			const bind = {
 				name: field,
