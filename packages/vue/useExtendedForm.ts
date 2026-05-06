@@ -1,6 +1,6 @@
 import { type VisitOptions, type Method, type FormDataType } from "@inertiajs/core";
 import { useForm, type InertiaForm } from "@inertiajs/vue3";
-import { computed, type ComputedRef, ref, toValue, watch } from "vue";
+import { computed, type ComputedRef, ref, toValue, watch, type MaybeRefOrGetter } from "vue";
 import { useResolvedRoute, type RouteProp } from "./useResolvedRoute";
 import { intersection, last, startCase, memoize, noop, clone } from "es-toolkit";
 
@@ -34,6 +34,7 @@ interface FormFieldBinding {
 	items?: { title: string; value: unknown }[];
 	step?: number;
 	accept?: string;
+	loading?: MaybeRefOrGetter<boolean>;
 	"error-messages"?: Record<string, string[]>;
 	modelValue?: unknown;
 	"onUpdate:modelValue"?: (newValue: unknown) => void;
@@ -112,6 +113,7 @@ interface ExtendedFormOptions<TForm> {
 	model?: boolean;
 	resetOnSuccess?: boolean;
 	transform?: (data: TForm) => TForm;
+	updating?: MaybeRefOrGetter<string[]>;
 }
 
 export function useExtendedForm<TForm extends FormDataType<TForm>>(
@@ -126,6 +128,7 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 		model = true,
 		visitOptions: userVisitOptions = {},
 		transform = null,
+		updating = []
 	} = options;
 	const resolvedRoute = useResolvedRoute(routeName);
 
@@ -280,6 +283,7 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 
 			if (framework === "vuetify") {
 				bind.label = startCase(field);
+				bind.loading = computed(() => toValue(updating).includes(field));
 				bind["error-messages"] = _form.errors[field];
 			}
 
