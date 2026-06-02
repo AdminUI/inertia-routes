@@ -13,6 +13,7 @@ interface PageResolverConfig {
 	layouts: ConditionalLayout[];
 	errorClass: string;
 	errorTextClass: string;
+	rootPath: string;
 	fileSuffix: string;
 }
 type PageModule = { default: Component & { layout: Component } };
@@ -29,21 +30,6 @@ const pageNotFound = (name: string, errorClass: string, errorTextClass: string) 
 	);
 };
 
-const resolveTemplate = (pages, name: string, suffix: string) => {
-	const chain = [
-		(curr) => map(curr, (path) => path.split("/")),
-		(curr) => unzip(curr),
-		(curr) => takeWhile(curr, (parts) => uniq(parts as string[]).length === 1),
-		(curr) => map(curr, first),
-		(curr) => join(curr, "/"),
-	];
-	const prefix = chain.reduce((acc, curr) => {
-		return curr(acc);
-	}, Object.keys(pages));
-
-	return `${prefix}/${name}${suffix}`;
-};
-
 const resolveConfig = (config: Partial<PageResolverConfig>): PageResolverConfig => {
 	const resolvedConfig = {
 		default: config.default,
@@ -52,12 +38,20 @@ const resolveConfig = (config: Partial<PageResolverConfig>): PageResolverConfig 
 		errorClass: config.errorClass ?? "inertia-page-resolver--error",
 		errorTextClass: config.errorTextClass ?? "inertia-page-resolver--error-text",
 		fileSuffix: config.fileSuffix ?? ".vue",
+		rootPath: config.rootPath ?? "./pages"
 	};
+	if (resolvedConfig.rootPath.endsWith("/") === false) {
+		resolvedConfig.rootPath += "/";
+	}
+
 	if (resolvedConfig.wrapper) {
 		if (typeof config.wrapper === "function") {
 			console.error("resolveInertiaPage: Layout wrapper must be a synchronous component");
 		}
 		resolvedConfig.wrapper.__is_wrapper = true;
+	}
+	if (resolvedConfig.rootPath.startsWith("./") === false) {
+		console.error("resolveInertiaPage: rootPath should start with ./");
 	}
 
 	return resolvedConfig;
@@ -71,7 +65,7 @@ export function createInertiaPageResolver(pagesGlob: PagesGlob, config: Partial<
 	const resolvedConfig = resolveConfig(config);
 
 	return async (name: string): Promise<PageModule | Component> => {
-		const resolved = pagesGlob[resolveTemplate(pagesGlob, name, resolvedConfig.fileSuffix)];
+		const resolved = pagesGlob[`${resolvedConfig.rootPath}${name}${resolvedConfig.fileSuffix}`];
 		const page = typeof resolved === "function" ? await resolved() : resolved;
 
 		if (!page) {
