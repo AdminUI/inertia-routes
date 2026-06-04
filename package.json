@@ -47,7 +47,7 @@
 	},
 	"license": "MIT",
 	"dependencies": {
-		"es-toolkit": "^1.45.1",
+		"es-toolkit": "^1.47.0",
 		"qs-esm": "^7.0.3"
 	},
 	"peerDependencies": {
@@ -80,18 +80,19 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
-		"esbuild": "^0.27.4",
-		"esbuild-node-externals": "^1.20.1",
-		"eslint": "^10.1.0",
+		"esbuild": "^0.28.0",
+		"esbuild-node-externals": "^1.22.0",
+		"eslint": "^10.4.1",
 		"eslint-config-prettier": "^10.1.8",
-		"eslint-plugin-vue": "^10.8.0",
+		"eslint-plugin-vue": "^10.9.2",
 		"gh-pages": "^6.3.0",
-		"globals": "^17.4.0",
-		"prettier": "^3.8.1",
-		"tsc-alias": "^1.8.16",
+		"globals": "^17.6.0",
+		"prettier": "^3.8.3",
+		"tsc-alias": "^1.8.17",
 		"typescript": "^5.9.3",
-		"vite": "^8.0.2",
+		"vite": "^8.0.16",
 		"vitepress": "^1.6.4",
-		"vue-eslint-parser": "^10.4.0"
-	}
+		"vue-eslint-parser": "^10.4.1"
+	},
+	"packageManager": "pnpm@11.5.1+sha512.93f7b57422ea7068257235b4c16eb60762eb68e1dc23723199cc739043ea9be2c4143274a399d8c6defa2b1176226d9ca1c4b63482d6200c1a8fbaa78c1d1485"
 }

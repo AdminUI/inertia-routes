@@ -230,10 +230,12 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 		const url = typeof maybeUrlOrOptions === "string" ? maybeUrlOrOptions : toValue(resolvedRoute);
 		const visitOptions = typeof maybeUrlOrOptions === "object" ? filterEvents(maybeUrlOrOptions) : maybeOptions;
 		if (options.resetOnSuccess) {
+			const _originalUserCallback = userVisitOptions.onSuccess ? userVisitOptions.onSuccess.bind(_form) : noop;
 			const _originalCallback = visitOptions.onSuccess ? visitOptions.onSuccess.bind(_form) : noop;
 			visitOptions.onSuccess = () => {
 				_form.defaults(_initialFormData.value);
 				_form.reset();
+				_originalUserCallback();
 				_originalCallback();
 			};
 		}

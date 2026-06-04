@@ -9,6 +9,7 @@ createInertiaApp({
   resolve: createInertiaPageResolver(
     import.meta.glob("./Pages/**/*.vue", { eager: true }), //
     {
+      rootPath: "./Pages",
       default: DefaultLayout,
     },
   ),
@@ -41,6 +42,7 @@ The first argument to `createInertiaPageResolver` must be a glob of pages (usual
 | `layouts`        | `array`     | null        | An array of conditional layout loaders, see below for more details     |
 | `errorClass`     | `string`    | \<empty>    | Class string to apply to the error page when a page isn't found        |
 | `errorTextClass` | `string`    | \<empty>    | Class string to apply to the page name on the error page               |
+| `rootPath`       | `string`    | "./pages"   | The root path of your pages glob.                                      |
 | `fileSuffix`     | `string`    | ".vue"      | The suffix of the pages in your glob                                   |
 
 ### Layouts
@@ -87,6 +89,7 @@ Conditions may be any of the following:
 ```js
 {
   resolve: createInertiaPageResolver(import.meta.glob("./Pages/**/*.vue", { eager: true }), {
+    rootPath: "./Pages",
     default: DefaultLayout,
     layouts: [
       {
