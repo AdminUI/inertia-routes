@@ -1,1 +1,0 @@
-- **BugFix**: visitOptions passed to `useExtendedForm` not being used in submit methods
