@@ -51,6 +51,7 @@ The following props can be passed to `useExtendedForm`:
 | `options.resetOnSuccess` | `boolean`       | false       | Reset the form to default when it is successfully submitted                   |
 | `options.visitOptions`   | `object`        | {}          | Inertia visit options that are passed through to submission methods           |
 | `options.transform`      | `(data) => data`| null        | Transform the form data object before submission                              |
+| `options.removeNull`     | `boolean|string[]`| false     | Strip null values from the form submission payload                            |
 
 ## Advanced Example
 

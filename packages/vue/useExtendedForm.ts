@@ -114,6 +114,7 @@ interface ExtendedFormOptions<TForm> {
 	resetOnSuccess?: boolean;
 	transform?: (data: TForm) => TForm;
 	updating?: MaybeRefOrGetter<string[]>;
+	removeNull?: boolean|string[];
 }
 
 export function useExtendedForm<TForm extends FormDataType<TForm>>(
@@ -128,7 +129,8 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 		model = true,
 		visitOptions: userVisitOptions = {},
 		transform = null,
-		updating = []
+		updating = [],
+		removeNull = false
 	} = options;
 	const resolvedRoute = useResolvedRoute(routeName);
 
@@ -245,10 +247,29 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 		};
 	};
 
+	const stripNullValues = (data: TForm): TForm => {
+		if (removeNull === false) {
+			return data;
+		}
+		return Object.fromEntries(
+			Object.entries(data).filter(([key, value]) => {
+				if (value !== null) {
+					return true;
+				}
+
+				return removeNull === true || removeNull.includes(key)
+					? false
+					: true;
+			}),
+		) as TForm;
+	}
+
 	extendedForm.submit = (method: Method, maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => {
 		const { url, visitOptions } = resolveRequestOptions(maybeUrlOrOptions, maybeOptions);
 		if (transform && typeof transform === "function") {
-			original.transform(transform);
+			original.transform((data: TForm) => stripNullValues(transform(data)));
+		} else {
+			original.transform(stripNullValues);
 		}
 		original.submit(method, url, visitOptions);
 	};
@@ -256,6 +277,11 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 	(["get", "post", "put", "patch", "delete"] as const).forEach((method) => {
 		extendedForm[method] = (maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => {
 			const { url, visitOptions } = resolveRequestOptions(maybeUrlOrOptions, maybeOptions);
+			if (transform && typeof transform === "function") {
+				original.transform((data: TForm) => stripNullValues(transform(data)));
+			} else {
+				original.transform(stripNullValues);
+			}
 			original[method](url, visitOptions);
 		};
 	});
