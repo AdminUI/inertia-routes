@@ -133,6 +133,7 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 		removeNull = false
 	} = options;
 	const resolvedRoute = useResolvedRoute(routeName);
+	const isDataFunction = typeof data === 'function'
 
 	const _form = rememberKey
 		? useForm<TForm>(rememberKey, data as TForm | (() => TForm))
@@ -209,7 +210,7 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 					throw new Error(json.error);
 				}
 				_formMeta.value = json;
-				if (autoHydrate) {
+				if (autoHydrate && !isDataFunction) {
 					_form.defaults(getFormDefaults());
 					_form.reset();
 				}
