@@ -153,6 +153,7 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 	};
 	const extendedForm = Object.assign(_form, {
 		bind: {} as Record<string, ComputedRef<FormFieldBinding>>,
+		getMeta: fetchFormMeta
 	}) as ExtendedForm<TForm>;
 
 	const _formMeta = ref<Record<string, string[]>>({});
@@ -198,7 +199,7 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 		}, {});
 	};
 
-	const fetchFormMeta = () => {
+	function fetchFormMeta() {
 		fetch("/inertia-routes/form-helper", {
 			method: "POST",
 			headers: {
@@ -334,7 +335,6 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 	}
 
 	extendedForm.bind = {} as Record<string, ComputedRef<FormFieldBinding>>;
-	extendedForm.getMeta = fetchFormMeta;
 	watch(_formMeta, (meta: Record<string, unknown>) => {
 		for (const field in meta) {
 			if (/\./.test(field)) {
