@@ -52,6 +52,7 @@ The following props can be passed to `useExtendedForm`:
 | `options.visitOptions`   | `object`        | {}          | Inertia visit options that are passed through to submission methods           |
 | `options.transform`      | `(data) => data`| null        | Transform the form data object before submission                              |
 | `options.removeNull`     | `boolean|string[]`| false     | Strip null values from the form submission payload                            |
+| `options.immediateMeta`  | `boolean`       | true        | Immediately fetches form meta data, otherwise call `form.getMeta()`           |
 
 ## Advanced Example
 

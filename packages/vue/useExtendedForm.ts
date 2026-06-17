@@ -19,6 +19,7 @@ type ExtendedForm<TForm extends FormDataType<TForm>> = Omit<
 	put: (maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => void;
 	delete: (maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => void;
 	submit: (method: Method, maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => void;
+	getMeta: () => void;
 };
 
 interface FormFieldBinding {
@@ -115,6 +116,7 @@ interface ExtendedFormOptions<TForm> {
 	transform?: (data: TForm) => TForm;
 	updating?: MaybeRefOrGetter<string[]>;
 	removeNull?: boolean|string[];
+	immediateMeta?: boolean;
 }
 
 export function useExtendedForm<TForm extends FormDataType<TForm>>(
@@ -130,7 +132,8 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 		visitOptions: userVisitOptions = {},
 		transform = null,
 		updating = [],
-		removeNull = false
+		removeNull = false,
+		immediateMeta = true
 	} = options;
 	const resolvedRoute = useResolvedRoute(routeName);
 	const isDataFunction = typeof data === 'function'
@@ -195,7 +198,7 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 		}, {});
 	};
 
-	if (routeName) {
+	const fetchFormMeta = () => {
 		fetch("/inertia-routes/form-helper", {
 			method: "POST",
 			headers: {
@@ -220,6 +223,10 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 					err?.message && typeof err.message === "string" ? err.message : "Unable to get extended form data";
 				console.error(message);
 			});
+	}
+
+	if (routeName && immediateMeta) {
+		fetchFormMeta();
 	}
 
 	/**
@@ -327,7 +334,8 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 	}
 
 	extendedForm.bind = {} as Record<string, ComputedRef<FormFieldBinding>>;
-	watch(_formMeta, (meta) => {
+	extendedForm.getMeta = fetchFormMeta;
+	watch(_formMeta, (meta: Record<string, unknown>) => {
 		for (const field in meta) {
 			if (/\./.test(field)) {
 				continue;
