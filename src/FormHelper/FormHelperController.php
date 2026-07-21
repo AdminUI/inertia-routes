@@ -13,6 +13,7 @@ use AdminUI\InertiaRoutes\Exceptions\InvalidRouteException;
 use AdminUI\InertiaRoutes\Exceptions\MissingRouteException;
 use AdminUI\InertiaRoutes\Exceptions\NoRulesFoundException;
 use AdminUI\InertiaRoutes\Exceptions\MissingFormRequestException;
+use AdminUI\InertiaRoutes\Helpers\RequestHelper;
 
 class FormHelperController
 {
@@ -87,36 +88,7 @@ class FormHelperController
 	private function replaceEnums($rule): mixed
 	{
 		if ($rule instanceof Enum) {
-			$ref = invade($rule);
-			$props = ['type', 'only', 'except'];
-			$data = [];
-			foreach ($props as $key) {
-				$data[$key] = $ref->{$key};
-			}
-
-			// If it's not a backed enum, abort
-			if (empty($data['type']) || is_subclass_of($data['type'], \BackedEnum::class) === false) {
-				return $rule;
-			}
-
-			if (!empty($data['only'])) {
-				$data['only'] = array_column($data['only'], 'value');
-			}
-			if (!empty($data['except'])) {
-				$data['except'] = array_column($data['except'], 'value');
-			}
-
-			$cases = $data['type']::cases();
-			$values = array_column($cases, 'value');
-
-			if (!empty($data['only'])) {
-				$options = $data['only'];
-			} else if (!empty($data['except'])) {
-				$options = Arr::reject($values, fn($value) => in_array($value, $data['except']));
-			} else {
-				$options = $values;
-			}
-
+			$options = RequestHelper::extractOptionsFromEnumRule($rule);
 			return "in:" . implode(",", $options);
 		} else return $rule;
 	}

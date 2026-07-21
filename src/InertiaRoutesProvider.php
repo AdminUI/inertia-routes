@@ -2,6 +2,7 @@
 
 namespace AdminUI\InertiaRoutes;
 
+use AdminUI\InertiaRoutes\Commands\GenerateFormTypesCommand;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -27,6 +28,9 @@ class InertiaRoutesProvider extends ServiceProvider
 	{
 		$this->packageSetup();
 		$kernel->prependMiddleware(InertiaRoutesMiddleware::class);
+		$this->commands([
+			GenerateFormTypesCommand::class
+		]);
 
 		// Declare the endpoint for getting input inherence
 		Route::post('/inertia-routes/form-helper', FormHelperController::class);

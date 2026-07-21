@@ -1,8 +1,8 @@
-import { type VisitOptions, type Method, type FormDataType } from "@inertiajs/core";
+import { type FormDataType, type Method, type VisitOptions } from "@inertiajs/core";
 import { useForm, type InertiaForm } from "@inertiajs/vue3";
-import { computed, type ComputedRef, ref, toValue, watch, type MaybeRefOrGetter } from "vue";
+import { clone, intersection, last, memoize, noop, startCase } from "es-toolkit";
+import { computed, ref, toValue, watch, type ComputedRef, type MaybeRefOrGetter } from "vue";
 import { useResolvedRoute, type RouteProp } from "./useResolvedRoute";
-import { intersection, last, startCase, memoize, noop, clone } from "es-toolkit";
 
 type Framework = "vuetify" | "none";
 
@@ -107,7 +107,7 @@ function addInputBindings(value: string[], framework: Framework = "none"): FormF
 
 interface ExtendedFormOptions<TForm> {
 	rememberKey?: string;
-	data?: TForm | (() => TForm);
+	data?: Partial<TForm> | (() => Partial<TForm>);
 	visitOptions?: Omit<VisitOptions, "method" | "data">;
 	framework?: Framework;
 	autoHydrate?: boolean;
@@ -115,7 +115,7 @@ interface ExtendedFormOptions<TForm> {
 	resetOnSuccess?: boolean;
 	transform?: (data: TForm) => TForm;
 	updating?: MaybeRefOrGetter<string[]>;
-	removeNull?: boolean|string[];
+	removeNull?: boolean | string[];
 	immediateMeta?: boolean;
 }
 
@@ -133,10 +133,10 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 		transform = null,
 		updating = [],
 		removeNull = false,
-		immediateMeta = true
+		immediateMeta = true,
 	} = options;
 	const resolvedRoute = useResolvedRoute(routeName);
-	const isDataFunction = typeof data === 'function'
+	const isDataFunction = typeof data === "function";
 
 	const _form = rememberKey
 		? useForm<TForm>(rememberKey, data as TForm | (() => TForm))
@@ -153,7 +153,7 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 	};
 	const extendedForm = Object.assign(_form, {
 		bind: {} as Record<string, ComputedRef<FormFieldBinding>>,
-		getMeta: fetchFormMeta
+		getMeta: fetchFormMeta,
 	}) as ExtendedForm<TForm>;
 
 	const _formMeta = ref<Record<string, string[]>>({});
@@ -266,12 +266,10 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 					return true;
 				}
 
-				return removeNull === true || removeNull.includes(key)
-					? false
-					: true;
+				return removeNull === true || removeNull.includes(key) ? false : true;
 			}),
 		) as TForm;
-	}
+	};
 
 	extendedForm.submit = (method: Method, maybeUrlOrOptions?: string | FormOptions, maybeOptions?: FormOptions) => {
 		const { url, visitOptions } = resolveRequestOptions(maybeUrlOrOptions, maybeOptions);
@@ -309,7 +307,7 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 			const metaValue = _formMeta.value[field];
 			if (Array.isArray(metaValue) === false) {
 				return {
-					loading: toValue(updating).includes(field)
+					loading: toValue(updating).includes(field),
 				};
 			}
 			const bind = {
