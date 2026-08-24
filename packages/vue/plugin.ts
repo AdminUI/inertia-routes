@@ -1,7 +1,7 @@
-import { reactive, watch, toRaw, type App } from "vue";
-import { routeKey } from "./useRoute";
-import { route, Config } from "ziggy";
 import { usePage } from "@inertiajs/vue3";
+import { reactive, toRaw, watch, type App } from "vue";
+import { Config, route } from "ziggy";
+import { routeKey } from "./useRoute";
 
 interface PluginConfig {
 	global?: boolean;
@@ -52,6 +52,9 @@ export const inertiaRoutes = {
 			if (!Object.keys(ziggy.routes)?.length) return "";
 			else return route(...args);
 		}) as typeof route;
+
+		/** @ts-ignore */
+		routeFunction.matched = [{}];
 
 		app.provide(routeKey, routeFunction);
 

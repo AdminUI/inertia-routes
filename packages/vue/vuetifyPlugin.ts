@@ -1,10 +1,10 @@
-import { computed, useAttrs, ref, getCurrentInstance, onMounted, onUnmounted, type App } from "vue";
-import { router } from "@inertiajs/vue3";
 import type { Method } from "@inertiajs/core";
+import { router } from "@inertiajs/vue3";
 import { useBrowserLocation } from "@vueuse/core";
-import { RouteProp, useResolvedRoute } from "./useResolvedRoute";
 import { lowerCase, omit, pick } from "es-toolkit";
 import { castArray } from "es-toolkit/compat";
+import { computed, getCurrentInstance, onMounted, onUnmounted, ref, useAttrs, type App } from "vue";
+import { RouteProp, useResolvedRoute } from "./useResolvedRoute";
 
 interface VuetifyPluginOptions {
 	flagMismatches?: boolean;
@@ -48,7 +48,7 @@ export interface UseLinkProps extends InertiaLinkPropMap {
 	to: RouteProp;
 }
 
-const camelise = (s: string): string => s.replace(/-./g, (x) => x[1].toUpperCase());
+const camelise = <T extends string>(s: T): ToCamelCase<T> => s.replace(/-./g, (x) => x[1].toUpperCase()) as ToCamelCase<T>;
 const resolveValue = (key: string, value: unknown) => {
 	if (["replace", "preserve-scroll", "preserve-state", "async"].includes(key)) {
 		return true;
@@ -106,7 +106,7 @@ const useLink = (options: VuetifyPluginOptions) => (props: UseLinkProps) => {
 	});
 	onUnmounted(() => controller.abort());
 
-	if (vm.proxy?.$el && options.flagMismatches !== true) {
+	if (vm && vm.proxy?.$el && options.flagMismatches !== true) {
 		vm.proxy.$el.dataset.allowMismatch = "class";
 	}
 
@@ -124,7 +124,7 @@ const useLink = (options: VuetifyPluginOptions) => (props: UseLinkProps) => {
 	};
 };
 
-const Plugin = (options) => ({
+const Plugin = (options: VuetifyPluginOptions) => ({
 	name: "RouterLink",
 	useLink: useLink(options),
 });
