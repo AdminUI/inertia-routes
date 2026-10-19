@@ -6,8 +6,9 @@
 		"declaration": true,
 		"declarationDir": "../../dist/vue2/types",
 		"module": "ES6",
-		"moduleResolution": "Node",
+		"moduleResolution": "Bundler",
 		"resolveJsonModule": true,
+		"strict": false,
 		"allowSyntheticDefaultImports": true,
 		"removeComments": true,
 		"paths": {

@@ -7,3 +7,4 @@
 - **Fix**: `resetOnSuccess` no longer resets to a snapshot that shares nested arrays and objects with the live form
 - **Fix**: `resetOnSuccess` now falls back to the form's own defaults when no hydrated snapshot exists (`data` as a function, `autoHydrate: false`, or a submit before the meta request returns)
 - **Fix**: Array field defaults no longer pick the wrong type when another field's name starts with the same prefix (e.g. `items` and `items_count`)
+- **Chore**: Updated dev deps

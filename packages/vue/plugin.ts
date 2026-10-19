@@ -49,7 +49,7 @@ export const inertiaRoutes = {
 				ziggy.location = null;
 			}
 
-			if (!Object.keys(ziggy.routes)?.length) return "";
+			if (!Object.keys(ziggy.routes)?.length) return "" as ReturnType<typeof route>;
 			else return route(...args);
 		}) as typeof route;
 
