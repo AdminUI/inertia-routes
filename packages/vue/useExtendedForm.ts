@@ -1,6 +1,6 @@
 import { type FormDataType, type Method, type VisitOptions } from "@inertiajs/core";
 import { useForm, type InertiaForm } from "@inertiajs/vue3";
-import { clone, intersection, last, memoize, noop, startCase } from "es-toolkit";
+import { cloneDeep, intersection, last, memoize, noop, startCase } from "es-toolkit";
 import { computed, ref, toValue, watch, type ComputedRef, type MaybeRefOrGetter } from "vue";
 import { useResolvedRoute, type RouteProp } from "./useResolvedRoute";
 
@@ -161,7 +161,7 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 
 	const getFormArrayDefaults = (name) => {
 		const keys = Object.keys(_formMeta.value);
-		const regex = new RegExp(`${name}\.[a-z]+`, "i");
+		const regex = new RegExp(`^${name}\\.[a-z]+`, "i");
 		const found = keys.some((key) => regex.test(key));
 		return found ? {} : [];
 	};
@@ -187,16 +187,15 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 	};
 
 	const getFormDefaults = () => {
-		return Object.keys(_formMeta.value).reduce((acc, curr) => {
+		const defaults = Object.keys(_formMeta.value).reduce((acc, curr) => {
 			if (/\./.test(curr)) return acc;
 
 			const rules = _formMeta.value[curr];
-			let defaultValue = getDefault(rules, curr);
-
-			acc[curr] = Object.hasOwn(_form, curr) ? _form[curr] : defaultValue;
-			_initialFormData.value = clone(acc);
+			acc[curr] = Object.hasOwn(_form, curr) ? _form[curr] : getDefault(rules, curr);
 			return acc;
 		}, {});
+		_initialFormData.value = cloneDeep(defaults);
+		return defaults;
 	};
 
 	function fetchFormMeta() {
@@ -239,20 +238,24 @@ export function useExtendedForm<TForm extends FormDataType<TForm>>(
 
 	const resolveRequestOptions = (maybeUrlOrOptions?: string | VisitOptions, maybeOptions?: VisitOptions) => {
 		const url = typeof maybeUrlOrOptions === "string" ? maybeUrlOrOptions : toValue(resolvedRoute);
-		const visitOptions = typeof maybeUrlOrOptions === "object" ? filterEvents(maybeUrlOrOptions) : maybeOptions;
-		if (options.resetOnSuccess) {
+		const visitOptions = {
+			...(typeof maybeUrlOrOptions === "object" ? filterEvents(maybeUrlOrOptions) : maybeOptions),
+		};
+		if (options.resetOnSuccess || visitOptions.onSuccess) {
 			const _originalUserCallback = userVisitOptions.onSuccess ? userVisitOptions.onSuccess.bind(_form) : noop;
 			const _originalCallback = visitOptions.onSuccess ? visitOptions.onSuccess.bind(_form) : noop;
-			visitOptions.onSuccess = () => {
-				_form.defaults(_initialFormData.value);
-				_form.reset();
-				_originalUserCallback();
-				_originalCallback();
+			visitOptions.onSuccess = async (page) => {
+				await _originalUserCallback(page);
+				await _originalCallback(page);
+				if (options.resetOnSuccess) {
+					if (_initialFormData.value) _form.defaults(_initialFormData.value);
+					_form.reset();
+				}
 			};
 		}
 		return {
 			url,
-			visitOptions: Object.assign(userVisitOptions, visitOptions ?? {}),
+			visitOptions: {...userVisitOptions, ...visitOptions },
 		};
 	};
 
