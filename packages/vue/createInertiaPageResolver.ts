@@ -1,7 +1,6 @@
 import type { Component } from "vue";
 import { h } from "vue";
-import { castArray, map, join, first } from "es-toolkit/compat";
-import { unzip, uniq, takeWhile } from "es-toolkit";
+import { castArray } from "es-toolkit/compat";
 
 interface ConditionalLayout {
 	condition: ((name: string) => boolean) | string | RegExp | boolean;
@@ -16,7 +15,9 @@ interface PageResolverConfig {
 	rootPath: string;
 	fileSuffix: string;
 }
-type PageModule = { default: Component & { layout: Component } };
+type PageModule = {
+	default: Component & { layout?: Component | Component[]; sublayout?: Component | Component[] };
+};
 type PageLoader = () => Promise<PageModule>;
 type PagesGlob = Record<string, PageModule | PageLoader>;
 
@@ -34,7 +35,10 @@ const resolveConfig = (config: Partial<PageResolverConfig>): PageResolverConfig 
 	const resolvedConfig = {
 		default: config.default,
 		wrapper: config.wrapper,
-		layouts: config.layouts ?? [],
+		layouts: [
+			...(config.layouts ?? []),
+			...(config.default ? [{ condition: true, layout: config.default }] : []),
+		],
 		errorClass: config.errorClass ?? "inertia-page-resolver--error",
 		errorTextClass: config.errorTextClass ?? "inertia-page-resolver--error-text",
 		fileSuffix: config.fileSuffix ?? ".vue",
@@ -55,6 +59,19 @@ const resolveConfig = (config: Partial<PageResolverConfig>): PageResolverConfig 
 	}
 
 	return resolvedConfig;
+};
+
+const applySublayout = (page: PageModule): PageModule => {
+	const sublayout = page.default?.sublayout;
+	if (!sublayout) {
+		return page;
+	}
+
+	const layout = castArray(page.default.layout ?? []);
+	// Skip any already present, as the page module is cached and resolved again on revisits
+	page.default.layout = [...layout, ...castArray(sublayout).filter((s) => !layout.includes(s))];
+
+	return page;
 };
 
 export function createInertiaPageResolver(pagesGlob: PagesGlob, config: Partial<PageResolverConfig> = {}) {
@@ -78,12 +95,7 @@ export function createInertiaPageResolver(pagesGlob: PagesGlob, config: Partial<
 			if (hasWrapper === false && resolvedConfig.wrapper) {
 				page.default.layout.unshift(resolvedConfig.wrapper);
 			}
-			return page;
-		}
-
-		if (resolvedConfig.default) {
-			// Push the default layout to the end of the layouts array
-			resolvedConfig.layouts.push({ condition: true, layout: resolvedConfig.default });
+			return applySublayout(page);
 		}
 
 		for (const configLayout of resolvedConfig.layouts) {
@@ -119,6 +131,6 @@ export function createInertiaPageResolver(pagesGlob: PagesGlob, config: Partial<
 			}
 		}
 
-		return page;
+		return applySublayout(page);
 	};
 }
